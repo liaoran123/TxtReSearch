@@ -1,0 +1,4 @@
+有Proxy的时候，会出现这个错误，网络上说：
+
+git config --global --unset http.proxy
+git config --global http.sslVerify false

@@ -1,0 +1,49 @@
+package routers
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"research/gstr"
+	"research/pubgo"
+	"strings"
+)
+
+var Dirs map[string]string
+var root, name string
+
+func GetDirs() {
+	Dirs = make(map[string]string)
+	root = pubgo.GetCurrentAbPath() + "\\dzj"
+	filepath.Walk(root, walkFunc)
+}
+
+func walkFunc(path string, info os.FileInfo, err error) error {
+
+	infoname := strings.ToLower(info.Name())
+	if strings.HasSuffix(infoname, ".txt") { //匹配txt文件{
+		name = gstr.Mstr(infoname, "-", ".txt")
+		if d, Ok := Dirs[name]; !Ok {
+			Dirs[name] = strings.Replace(path, root, "", -1)
+		} else {
+			fmt.Println(d)
+			fmt.Println(path, name, "重复")
+		}
+	}
+	return nil
+}
+
+/*
+func walkFunc1(path string, info os.FileInfo, err error) error {
+
+	if info.IsDir() {
+		files, _ := ioutil.ReadDir(path)
+		if len(files) == 0 { //空文件夹
+			fmt.Println(path)
+			dloop++
+		}
+
+	}
+	return nil
+}//dloop=4650
+*/
