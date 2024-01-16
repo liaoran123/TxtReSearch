@@ -1,0 +1,11 @@
+package web
+
+import (
+	"net/http"
+	"txtresearch/gstr"
+)
+
+func So(w http.ResponseWriter, req *http.Request) {
+	kw := gstr.Do(req.URL.Path+"#", "/", "#", true, false)
+	http.Redirect(w, req, "/s/?kw="+kw+"&dir=", http.StatusFound) //http.StatusFound 
+}

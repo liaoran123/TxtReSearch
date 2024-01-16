@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {{template "static" .}}
+  <title>error</title>
+</head>
+
+<body style="font-size: 16px;">
+  <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+    {{template "header" .}}
+    {{template "search" .}}
+    {{template "gomove" .}}
+    <div class="card">
+      <div class="card-body">
+        搜索用时：0
+      </div>
+    </div>
+    <div class="card" id="Htmls">
+      <div class="card-body">
+        没有结果！
+        <br />
+        请善用搜索框提示词，以获得正确的搜索词。
+        <br />
+        <b>7个字内</b>（不能包括标点符号）， 只要《四库全书》中存在，<b>必有提示词</b>。<br />
+        如果选择《易藏》，那么只要《易藏》中存在，必有提示词，以此类推。
+      </div>
+    </div>
+  </div>
+  {{template "footer" .}}
+</body>
+
+</html>

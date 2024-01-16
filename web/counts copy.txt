@@ -1,0 +1,75 @@
+package web
+
+import (
+	"sync"
+)
+
+// ---统计文章，搜索流量
+var arttjs, searchtjs *tjs
+
+type tjs struct {
+	mlen int //最大map长度
+	tjm  map[string]*ct
+	mu   sync.RWMutex
+}
+
+func Newtjs(mlen int) *tjs {
+	return &tjs{
+		mlen: mlen,
+		tjm:  map[string]*ct{},
+	}
+}
+func (t *tjs) Brows(id string) {
+	if id == "" {
+		return
+	}
+	if db, ok := t.tjm[id]; ok {
+		t.mu.Lock()
+		defer t.mu.Unlock()
+		db.Add()
+	} else {
+		if len(t.tjm) >= t.mlen {
+			t.Del()
+		}
+		t.tjm[id] = newct(id, 1)
+	}
+}
+
+// 查找最小值
+func (t *tjs) MinKey() string {
+	mk := ""
+	minct := 0
+	for _, v := range t.tjm {
+		if v.ts == 1 { //1就是最小值
+			return v.id
+		}
+		if minct == 0 { //初始化minct
+			minct = v.ts
+		}
+		if v.ts <= minct {
+			mk = v.id
+		}
+	}
+	return mk
+}
+func (t *tjs) Del() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	k := t.MinKey()
+	delete(t.tjm, k)
+}
+
+type ct struct {
+	id string
+	ts int //--每天流量
+}
+
+func newct(id string, ts int) *ct {
+	return &ct{
+		id: id,
+		ts: ts,
+	}
+}
+func (c *ct) Add() { //统计点击
+	c.ts++
+}

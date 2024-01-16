@@ -1,0 +1,41 @@
+{{define "search"}}
+<div class="card">
+    <div class="card-header">
+     
+        <nav class="navbar navbar-light bg-light">          
+          <div>
+            <a class="navbar-brand"   href="{{.Pubpar.Host}}/{{if .Pubpar.Ift}}?l=1{{end}}" title='{{jf "国学传统文化四库全书" .Pubpar.Ift}}'>
+              <img src="{{.Pubpar.Host}}/static/img/logo.jpg" />搜佛说</a>
+          </div>
+                <div class="input-group" style="max-width: 480px; margin-left: auto; margin-right: auto;">                                                                              
+                <input  list="datas" type="text" class="form-control" name="param" id="param" list="datas" autocomplete="off"
+                data-dir="" data-dir="jingbu" data-param="1" placeholder='{{jf "四库全书考据级别搜索" .Pubpar.Ift}}'>
+                    <datalist id="datas">                              
+                    </datalist>
+                   
+                    <div class="btn-group" id="jlvDropdown">
+                        <button id="bttext" type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-dir="">
+                          {{jf "全部" .Pubpar.Ift}}
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#"  data-dir="">{{jf "全部" .Pubpar.Ift}}</a></li>
+                          <li><a class="dropdown-item" href="#01"  data-dir="01">{{jf "易藏" .Pubpar.Ift}}</a></li>
+                          <li><a class="dropdown-item" href="#02"  data-dir="02">{{jf "儒藏" .Pubpar.Ift}}</a></li>                              
+                          <li><a class="dropdown-item" href="#03"  data-dir="03">{{jf "道藏" .Pubpar.Ift}}</a></li>
+                          <!--<li><a class="dropdown-item" href="#04"  data-dir="04">{{jf "佛藏" .Pubpar.Ift}}</a></li>-->
+                          <li><a class="dropdown-item" href="#05"  data-dir="05">{{jf "子藏" .Pubpar.Ift}}</a></li>
+                          <li><a class="dropdown-item" href="#06"  data-dir="06">{{jf "史藏" .Pubpar.Ift}}</a></li>
+                          <li><a class="dropdown-item" href="#07"  data-dir="07">{{jf "诗藏" .Pubpar.Ift}}</a></li>
+                          <li><a class="dropdown-item" href="#08"  data-dir="08">{{jf "集藏" .Pubpar.Ift}}</a></li>
+                          <li><a class="dropdown-item" href="#09"  data-dir="09">{{jf "医藏" .Pubpar.Ift}}</a></li>
+                          <li><a class="dropdown-item" href="#10"  data-dir="10">{{jf "艺藏" .Pubpar.Ift}}</a></li>
+                          <li><a class="dropdown-item" href="#11"  data-dir="11">{{jf "龙藏" .Pubpar.Ift}}</a></li>
+                        </ul>
+                      </div>
+                    <button   id="ssbt"  type="button" class="btn btn-primary"><b>{{jf "搜索"
+                        .Pubpar.Ift}}</b></button>
+                </div>          
+        </nav>            
+    </div>
+</div>
+{{end}}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {{template "static" .}}
+    <meta http-equiv="expires" content="2592000">
+    <title>{{jf "热搜词" .Pubpar.Ift}}-{{jf "国学传统文化四库全书-搜佛说" .Pubpar.Ift}}</title>
+</head>
+
+<body style="font-size: 16px;" onload="setdir()">
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <div class="card-header">
+                {{$host:=.Pubpar.Host}}
+                <a href="{{$host}}/dir/" title="四库全书目录">{{jf "四库全书" .Pubpar.Ift}}</a> /
+            </div>
+            <div class="card-header">
+                <h3>{{jf "热搜词" .Pubpar.Ift}}</h3>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                {{range $i, $a := .Ahot}}
+                <p><a href="{{$host}}/s/{{$a.Id}}">{{$a.Id}}</a></p>
+                {{end}}
+            </div>
+           
+            <div class="card-header">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {{range $p := .Pg}}
+                        <li class="page-item"><a class="page-link" href="{{$host}}/kw/?p={{$p}}">{{$p}}</a></li>
+                        {{end}}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    {{template "footer" .}}
+</body>
+
+</html>

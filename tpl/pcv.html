@@ -1,0 +1,55 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>{{jf "四库全书考据级搜索系统电脑版-搜佛说" .Pubpar.Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <div class="card-header">
+                <h2>赞助</h2>
+            </div>
+            <div class="card-header">
+                {{jf "达108元，送" .Pubpar.Ift}} <a href="{{.Pubpar.Host}}/research/">{{jf "四库全书考据级搜索系统电脑版" .Pubpar.Ift}}</b></a>。              
+            </div>
+            <div class="card-header">
+                {{jf "电脑版可以安装在自己电脑上使用，不受网络环境影响，高速稳定，无广告" .Pubpar.Ift}}。
+            </div>
+            <div class="card-header">
+                {{jf "原有赞助达108元的用户，以及购买过“搜佛说”系统用户，只需多赞助30元，以作U盘、邮资等工本费,皆可获得免费赠送" .Pubpar.Ift}}。               
+            </div>           
+            <div class="card-header">
+                {{jf "系统总计20多G，压缩后15G。由于百度等网盘限制，文件过大无法上传，只能通过U盘邮寄" .Pubpar.Ift}}。
+              
+                <br>
+                {{jf "新用户等赞助达108元即可获得" .Pubpar.Ift}}。
+            </div>
+            <div class="card-header">
+                {{jf "如有需要，支付宝赞助后留言联系信息或email" .Pubpar.Ift}}。
+            </div>
+            <div class="card-header">
+
+                <b>{{jf "使用方法" .Pubpar.Ift}}</b>： {{jf
+                "将压缩文件解压到自己电脑硬盘上，第一次使用需要打开系统服务程序，之后电脑开机自动启动，直接打开网址即可使用，使用方法与本站一样。详细请查看系统附带的“使用说明”" .Pubpar.Ift}}。
+            </div>
+            <div class="card-header">
+                <img src="{{.Pubpar.Host}}/static123/img/zfb.jpg"/> 
+                <br>
+                {{jf "支付宝账号" .Pubpar.Ift}}：<span id="zfbemial"></span>@qq.com
+            </div>
+          
+            <script>
+                $("#zfbemial").text("2065551801")       
+            </script>
+        </div>
+        {{template "footer" .}}
+</body>
+
+</html>

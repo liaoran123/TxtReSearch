@@ -1,0 +1,59 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>{{jf "搜索说明-国学传统文化四库全书-搜佛说" .Pubpar.Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{jf "原《乾隆大藏经》搜索请选择《龙藏》，两者数据一致" .Pubpar.Ift}}。<br>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="card-header">
+                <h2>
+                    {{jf "搜索方法说明" .Pubpar.Ift}}
+                </h2>
+            </div>
+            <div class="card-header">
+                <b>{{jf "【精准搜索】（单词搜索）" .Pubpar.Ift}}</b>：{{jf "可用《四库全书》中任意字，词，句搜索，理论上获得结果的成功率是100%" .Pubpar.Ift}}。
+            </div>
+
+            <div class="card-header">
+                <b>{{jf "【模糊搜索】（组合搜索）" .Pubpar.Ift}}</b>：{{jf "如记不得原文整句，但记得其中的2个或多个词，则可以用这些字词组合搜索，字词等之间用【空格】等标点符号隔开"
+                .Pubpar.Ift}}。
+                {{jf "同一个句子内，理论上获得结果的成功率是100%" .Pubpar.Ift}}。
+            </div>
+            <div class="card-header">
+                <b>{{jf "【目录、经名等搜索】" .Pubpar.Ift}}</b>：{{jf "可用【精准搜索】和【模糊搜索】方法，前面加《。如要搜索“佛说阿弥陀经”，输入“《佛说阿弥陀经”搜索即可"
+                .Pubpar.Ift}}。
+            </div>
+            <div class="card-header">
+                <b>{{jf "【目录范围搜索】" .Pubpar.Ift}}</b>：{{jf "进入相应的目录页面搜索即可" .Pubpar.Ift}}。
+            </div>
+            <div class="card-header">
+                <b>{{jf "搜索框提示词" .Pubpar.Ift}}</b>： 
+                <b>{{jf "7个字内" .Pubpar.Ift}}</b>{{jf "（不能包括标点符号）， 只要《四库全书》中存在，必有提示词" .Pubpar.Ift}}。<br />
+                {{jf "如果选择《易藏》，那么只要《易藏》中存在，必有提示词，以此类推" .Pubpar.Ift}}。
+            </div>
+           
+            <div class="card-header">
+                {{jf "某些原因，四库全书中的《佛藏》，更换为《龙藏》，即《乾隆大藏经》" .Pubpar.Ift}}。
+            </div>
+
+        </div>
+    </div>
+    <script>
+        $("#tytab1").addClass("active")       //搜索类型 ，经律论名
+    </script>
+    {{template "footer" .}}
+</body>
+
+</html>

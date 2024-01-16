@@ -1,5 +1,0 @@
-//小白数据库
-//表信息
-package xbdb
-
-//TableInfo运算

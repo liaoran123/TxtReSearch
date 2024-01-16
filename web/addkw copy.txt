@@ -1,0 +1,96 @@
+package web
+
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"os"
+	"sync"
+)
+
+var rw sync.RWMutex //读写锁
+
+func addkw(file, str string, len int64) {
+	appendToFile(file, str)
+	writetb(file, len)
+}
+
+// 将内容追加文件末尾
+func appendToFile(file, str string) {
+	rw.Lock()
+	f, err := os.OpenFile(file, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0660)
+	if err != nil {
+		fmt.Printf("Cannot open file %s!\n", file)
+		return
+	}
+	defer f.Close()
+	f.WriteString("\n" + str)
+	rw.Unlock()
+}
+
+// 判断文件是否大于某值，则写入表，后，清空
+func writetb(file string, len int64) {
+	rw.Lock() 
+	defer rw.Unlock()
+	fi, err := os.Stat(file)
+	if err != nil {
+		return
+	}
+	if fi.Size() < len {
+		return
+	}
+	//println(fi.Size())
+	kw := map[string]int{}
+	f, err := os.Open(file)
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	defer f.Close()
+	sline := ""
+	reader := bufio.NewReader(f)
+	for {
+		line, _, err := reader.ReadLine()
+		if err == io.EOF {
+			break
+		}
+		sline = string(line)
+		//整理累计搜索词
+		if k, ok := kw[sline]; !ok {
+			kw[sline] = 1
+		} else {
+			kw[sline] = k + 1
+		}
+	}
+	//var vs [][]byte
+	//var count int
+	tbn := "kws"
+	for k, _ := range kw {
+		//查找该词是否存在，存在则累加，否则，添加
+		if k == "" {
+			continue
+		}
+		//key := Table[tbn].Select.GetIdxPrefix([]byte("key"), []byte(k))
+		//idvalue := Table[tbn].Select.GetValue(key)
+		insp := map[string]string{}
+		insp["key"] = k
+		insp["count"] = "0"
+		/*
+			if idvalue == nil {
+				insp["count"] = "1"
+			} else {
+				vs = bytes.Split(idvalue, []byte(xbdb.Split))
+				count = BytesToInt(vs[1])
+				count += v
+				insp["count"] = strconv.Itoa(count)
+			}*/
+		r := Table[tbn].Ins(insp)
+		if !r.Succ {
+			println(r.Info)
+		}
+	}
+	//rw.Lock()            //上面的代码执行时间长,没有锁，可能导致个别词丢失。
+	os.Truncate(file, 0) //清空文件
+	//rw.Unlock()
+
+}

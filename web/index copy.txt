@@ -1,0 +1,86 @@
+package web
+
+import (
+	"html/template"
+	"net/http"
+	"os"
+	"strings"
+	"txtresearch/gstr"
+	"txtresearch/pubgo"
+)
+
+type index struct {
+	Pubpar pubpar
+	Ahot   []arthot
+	Sehot  []string
+}
+
+// 首页的热文列表
+type arthot struct {
+	Id, Title string
+}
+
+func Newindex(req *http.Request) index {
+	return index{
+		Pubpar: newpubpar(req),
+	}
+}
+
+func Index(w http.ResponseWriter, req *http.Request) {
+	if strings.Contains(req.URL.Path, ".txt") {
+		f, _ := os.ReadFile(cdir + req.URL.Path)
+		w.Write(f)
+		return
+	}
+	cip := pubgo.Cip(req)
+	/* //好像攻击并没有影响，只是可能香港宽带卡
+	lj := ConfigMap["lanjie"].(int)
+	if cips.tjm[cip] > lj { //访问记录大于108即为非法访问
+		w.Write([]byte("")) //非法访问
+		return
+	}
+	*/
+	cips.Brows(cip) //记录访问ip
+
+	rd := Newindex(req)
+	pubgo.Tj.Brows("Index")
+
+	for k := range arttjs.tjm {
+		ahot := arthot{}
+		ahot.Id = k
+		ahot.Title = gstr.Do(Dirs[k], "\\", ".txt", true, false)
+		ahot.Title = gstr.RStr(ahot.Title, "-")
+		rd.Ahot = append(rd.Ahot, ahot)
+	}
+	for k := range searchtjs.tjm {
+		rd.Sehot = append(rd.Sehot, k)
+	}
+	//--组织模板数据
+	tpl := cdir + "/tpl" //必须是绝对路径
+	if ConfigMap["tpl"] != nil {
+		tpl = ConfigMap["tpl"].(string)
+	}
+	TemplatesFiles := []string{
+		tpl + "/index.html",
+		tpl + "/pub/static.html",
+		tpl + "/pub/header.html",
+		tpl + "/pub/search.html",
+		tpl + "/pub/gomove.html",
+		tpl + "/pub/footer.html", // 多加的文件
+	}
+
+	funcMap := template.FuncMap{ //--需要注册的函数
+		"jf": pubgo.Jf,
+	}
+	t, err := template.New("index.html").Funcs(funcMap).ParseFiles(TemplatesFiles...)
+	//--New("index.html") 的 index.html必须是TemplatesFiles第一个文件名
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+	err = t.ExecuteTemplate(w, "index.html", rd)
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+}

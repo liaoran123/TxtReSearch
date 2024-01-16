@@ -1,0 +1,75 @@
+package web
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"txtresearch/gstr"
+	"txtresearch/pubgo"
+)
+
+// 根据dzj生成目录map
+var Dirs map[string]string
+var Root, ph, name string
+
+// 获取大藏经所有经文
+func GetDirs() {
+	Dirs = make(map[string]string)
+	Root = pubgo.GetCurrentAbPath() + "\\skqs"
+	//Root = pubgo.GetCurrentAbPath() + "\\skqs"
+	filepath.Walk(Root, walkFunc)
+}
+func walkFunc(path string, info os.FileInfo, err error) error {
+	ph = strings.Replace(path, Root, "", -1) //相对路径
+	if ph == "" {
+		return nil
+	}
+	ph = gstr.RStr(ph, "\\")
+	name = pubgo.Getdirid(ph)
+	Dirs[name] = ph
+	return nil
+}
+
+/*
+	func walkFunc1(path string, info os.FileInfo, err error) error {
+		ph = strings.Replace(path, Root, "", -1) //相对路径
+		if ph == "" {
+			return nil
+		}
+		ph = gstr.RStr(ph, "\\")
+		name = pubgo.Getdirid(ph)
+		Dirs[name] = ph
+		return nil
+	}
+*/
+func LoadDirs() {
+	text, err := os.ReadFile("dirs.txt")
+	if err != nil {
+		GetDirs()
+	}
+	text, err = os.ReadFile("dirs.txt")
+	if err != nil {
+		println("请联系管理员！")
+		return
+	}
+	fmt.Printf("text: %v\n", text)
+}
+
+/*
+// 提取所有文件夹的id组合成该文件id
+// dzj\3-论\5-此土著述\151-缁门警训\090-诫观檀越四事从苦缘起出生法 id=3-5-151-090
+func getdirid(path string) string {
+	xg := strings.Split(path, "\\")
+	var hg []string
+	id := ""
+	for _, xv := range xg {
+		hg = strings.Split(xv, "-")
+		if len(hg) < 2 {
+			println(path)
+		}
+		id += hg[0] + "-"
+	}
+	return strings.Trim(id, "-")
+}
+*/

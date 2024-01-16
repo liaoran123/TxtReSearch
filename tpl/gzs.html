@@ -1,0 +1,60 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>{{jf "佛音传播工作室--千佛网" .Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <!-- Default panel contents -->
+            <div class="card-header">
+                <h2>
+                    {{jf "佛音传播工作室" .Ift}}
+                </h2>
+            </div>
+            <div class="card-body">
+                <p class="text-start">佛音传播工作室，由了然居士组建。</p>
+            </div>
+            <div class="card-header">
+                <h2>
+                    {{jf "愿景" .Ift}}
+                </h2>
+            </div>
+            <div class="card-body">
+                <p class="text-start">1，创建大藏经搜索引擎。（完成）</p>
+                <p class="text-start">2，以乾隆大藏经为基础，收集其他版本大藏经未收录的经典。</p>
+                <p class="text-start">3，以大藏经搜索引擎为基础，逐步建立一个全球性的大型佛教网站。</p>
+            </div>
+            <div class="card-header">
+                <h2>
+                    {{jf "招募" .Ift}}
+                </h2>
+            </div>
+            <div class="card-body">
+                <p class="text-start">全球招募有志弘扬佛法的同修。</p>
+            </div>
+            <div class="card-header">
+                <h2>
+                    {{jf "联系" .Ift}}
+                </h2>
+            </div>
+            <div class="card-body">
+                <p class="text-start">
+                    <i class="bi-envelope"></i><b id="email"></b>@gmail.com
+                </p>
+            </div>
+        </div>
+        <script>
+            $("#email").text("liao010203kk")
+        </script>
+        {{template "footer" .}}
+</body>
+
+</html>

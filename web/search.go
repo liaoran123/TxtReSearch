@@ -1,0 +1,323 @@
+package web
+
+import (
+	"fmt"
+	"html/template"
+	"net/http"
+	"strings"
+	"sync"
+	"time"
+	"txtresearch/gstr"
+	"txtresearch/pubgo"
+	"txtresearch/xbdb"
+
+	"github.com/syndtr/goleveldb/leveldb/iterator"
+)
+
+// 获取搜索参数，因为SEO需要支持url两种方法传参数
+func getSearchparas(req *http.Request) (kw, dir, p string) {
+	if strings.Contains(req.RequestURI, "?kw") {
+		params := getparas(req)
+		kw = params["kw"]
+		dir = params["dir"]
+		p = params["p"]
+	} else { ///s/实事求是_11  == /s/实事求是
+		if strings.Contains(req.URL.Path, "_") {
+			kw = gstr.Do(req.URL.Path, "/", "_", true, false)
+			dir = gstr.Do(req.URL.Path+"#", "_", "#", true, false)
+		} else {
+			kw = gstr.Do(req.URL.Path+"#", "/", "#", true, false)
+			dir = ""
+		}
+		p = ""
+	}
+	return
+}
+func WebSearch(w http.ResponseWriter, req *http.Request) {
+	tbname := "c"
+	Se := sepool.Get().(*SeExefunc) //NewSeExefunc改为进程池方式
+	ctx := req.Context().Value("data").(map[string]interface{})
+	Se.Pubpar = ctx["pubpar"].(pubpar) //读取上下文
+	Se.Kw, Se.Dir, Se.P = getSearchparas(req)
+	Se.ks = pubgo.GetCnS(Se.Kw) //strings.Split(Se.Kw, " ") //用空格来判断组合查询
+	if len(Se.ks) == 0 {
+		http.Redirect(w, req, "/serror/", http.StatusFound)
+		//w.Write([]byte("没有结果，请【后退】重新输入搜索词"))
+		return
+	}
+
+	Se.Kw = Sublen(Se.Kw, 35) //最大长度35
+	Se.tbname = tbname
+	if Se.Dir != "" {
+		if _, ok := Dirs[Se.Dir]; !ok { //检测dir的合法性
+			Se.Dir = ""
+		}
+	}
+	Se.Count = 21
+
+	//获取字数最长的词，通常字数最长的就是数据量最少的词。以该词作为组合查询的遍历定位词。
+	Se.mkw = getMaxLenKw(Se.ks)
+	Se.SetLimitLen()
+	Se.mkw = Sublen(Se.mkw, 7) //搜索词最大长度是7
+	Se.bt = time.Now()
+	Se.mlen = 49
+
+	asc := true // params["asc"] == "" //params["asc"]默认空值即true
+	p := Se.P
+	ok := false
+
+	var key []byte
+	var iter iterator.Iterator
+	if p == "" {
+		//第一页搜索没有p值，需要查询获得
+		key = Table[tbname].Select.GetIdxPrefixLike([]byte("s"), []byte(Se.mkw))
+		iter, ok = Table[tbname].Select.IterPrefixMove(key, asc)
+	} else {
+		iter, ok = Table[tbname].Select.IterSeekMove([]byte(p))
+	}
+	if !ok {
+		Se.Count = 0
+	}
+	ts := pubgo.Newts() //计算执行时间
+	//Se.r.WriteString("{\"datalist\":[")
+	xbdb.NewIters(iter, ok, asc, 0, -1).ForKVFun(Se.search)
+	setime := ts.Gstrts()
+	Se.Setime = setime
+	iter.Release()
+	if Se.Loop == 0 {
+		//go appendToFile(cdir+"\\noresult.txt", Se.mkw+","+Se.Dir+"\n") ////结果很多，并不具备太多纠正价值
+		http.Redirect(w, req, "/serror/", http.StatusFound)
+		return
+	}
+	if Se.Loop > 2 && p == "" { //必须有搜索结果才加入热搜，否则会被利用
+		go searchtjs.Brows(Se.mkw)
+		go appendToFile(cdir+"\\newkw.txt", Se.mkw) //追加到文件
+		go writetb(cdir+"\\newkw.txt", 3000)        //大于3K写入表
+	}
+
+	pubgo.Tj.Brows("Search-" + Se.Dir) //跟踪搜索以及类型
+
+	//--组织模板数据
+	tpl := cdir + "/tpl"
+	if ConfigMap["tpl"] != nil {
+		tpl = ConfigMap["tpl"].(string)
+	}
+	TemplatesFiles := []string{
+		tpl + "/s.html",
+		tpl + "/pub/static.html",
+		tpl + "/pub/header.html",
+		tpl + "/pub/search.html",
+		tpl + "/pub/gomove.html",
+		tpl + "/pub/footer.html", // 多加的文件
+	}
+
+	funcMap := template.FuncMap{ //--需要注册的函数
+		"jf": pubgo.Jf,
+	}
+	t, _ := template.New("s.html").Funcs(funcMap).ParseFiles(TemplatesFiles...)
+	//--New("index.html") 的 index.html必须是TemplatesFiles第一个文件名
+
+	err := t.ExecuteTemplate(w, "s.html", Se)
+	if err != nil {
+		fmt.Println(req.URL.Path, err)
+	}
+	Se = new(SeExefunc) //重置struct
+	sepool.Put(Se)      //释放内存进程池
+}
+
+// 建立一个共享进程池
+var sepool = sync.Pool{
+	New: func() interface{} {
+		return new(SeExefunc)
+	},
+}
+
+// 搜索返回结果
+type seresult struct {
+	Fileid   string
+	Filename string
+	Filepath string
+	Dirs     []dirinfo
+	Filemeta string
+	Secid    string
+	LSecid   string
+}
+
+// 搜索执行类
+type SeExefunc struct {
+	Pubpar pubpar
+	tbname string
+	Kw     string
+	Dir    string   //目录范围，可以是多个
+	ks     []string //用空格来判断组合查询，分解出多个词
+	mkw    string   //最长的关键词
+	Count  int      //返回条数
+	mlen   int      //摘录最大长度
+	P      string   //当前页码
+	Loop   int      //查询到的条数
+	//r       *bytes.Buffer
+	Sresult []seresult //返回结果集合
+	Lastkey string     //最后的key值
+	artid   string     //文章id
+	lsecid  string
+	bt      time.Time
+	Setime  string //执行时间
+}
+
+func (e *SeExefunc) search(k, v []byte) bool {
+	if time.Since(e.bt).Seconds() > 2 { //只要是控制组合查询超时时间
+		e.Loop = 21 //以便用户点击下一页，分散时间进行搜索，缓解性能问题。
+		//fmt.Println("组合查询超时3秒。") //多次执行由于会加载内存，则可以完成。
+		return false
+	}
+
+	if !strings.Contains(string(k), e.mkw) {
+		return false //key不存在kw，即已经超过所需数据
+	}
+	//rd := xbdb.KVToRd(k, v, []int{})
+	//解构rd，转为字符串lastkey。参照artpost.ArtSecToId组合规则
+	keys := Table[e.tbname].Split(k) //bytes.Split(rd, []byte(xbdb.Split))
+	if len(keys) != 3 {
+		fmt.Println("Split", string(k), "小于3个数字元素")
+		return true
+	}
+	e.Lastkey = string(k)
+	artid := string(keys[2])
+	secid := strings.Split(artid, ",")[1]
+	artid = strings.Split(artid, ",")[0]
+	if e.artid == artid { //排除重复。同一段落包含多个相同kw时，出现重复情况。
+		return true
+	}
+
+	e.artid = artid
+	if !strings.HasPrefix(artid, e.Dir) {
+		return true //范围搜索不匹配
+	}
+	if !e.exsit(artid, secid) { //组合查询
+		return true
+	}
+	ss := seresult{}
+	ss.Secid = secid
+	ss.Filepath = Dirs[artid] //+ ".txt"
+	ss.Filepath = strings.Replace(ss.Filepath, ".txt", "", -1)
+	ss.Dirs = getdirs(ss.Filepath)
+	//filepath := Dirs[e.artid] + ".txt"
+	//e.r.WriteString("{\"filepath\":" + strconv.Quote(filepath) + ",")                                //写入目录路径
+	ss.Fileid = artid
+	//e.r.WriteString("\"fileid\":" + strconv.Quote(e.artid) + ",")                                    //写入目录路径
+	ss.Filename = gstr.Do(ss.Filepath+".", "\\", ".", true, false)
+	//e.r.WriteString("\"filename\":" + strconv.Quote(gstr.Do(filepath, "-", ".", true, false)) + ",") //写入文章标题
+	//e.r.WriteString("\"secid\":" + strconv.Quote(e.secid) + ",")
+	ss.Filemeta = e.getartmeta(keys[2])
+	//e.r.WriteString("\"filemeta\":" + strconv.Quote(e.getartmeta(keys[2])) + ",") //写入文章摘录信息
+	ss.LSecid = e.lsecid
+	//e.r.WriteString("\"lsecid\":" + strconv.Quote(e.lsecid) + "},")
+	e.Sresult = append(e.Sresult, ss)
+	e.Loop++
+	return e.Loop < e.Count
+}
+func getdirs(fp string) []dirinfo {
+	var df dirinfo
+	var dfs []dirinfo
+	dirs := strings.Split(fp, "\\")
+	dlen := len(dirs)
+	for i := 0; i < dlen-1; i++ {
+		df = dirinfo{}
+		for j := 0; j <= i; j++ {
+			df.Did += gstr.LStr(dirs[j], "-") + "-"
+			df.Name += gstr.RStr(dirs[j], "-") + "."
+		}
+		df.Did = strings.Trim(df.Did, "-")
+		df.Name = strings.Trim(df.Name, ".")
+		dfs = append(dfs, df)
+	}
+	return dfs
+}
+
+// 组合查询
+func (e *SeExefunc) exsit(artid, secid string) (find bool) {
+	if len(e.ks) < 2 {
+		find = true
+		return
+	}
+	id := artid + "," + secid
+	idxvalue := Table[e.tbname].Ifo.FieldChByte("id", id)
+	btext := Table[e.tbname].Select.GetPKValue(idxvalue)
+
+	secstr := string(btext)
+	fc := 0
+	for i := 0; i < len(e.ks); i++ { //for _, v := range e.ks { //如果在该段落内容里，所有的词组都存在，即是匹配。
+		if strings.Contains(secstr, Sublen(e.ks[i], 7)) {
+			fc++
+		}
+		//find = find && strings.Contains(secstr, Sublen(e.ks[i], 7)) //精准查询
+	}
+	if fc >= len(e.ks)/2+1 { //存在一半以上即当为匹配
+		find = true
+	}
+	return
+}
+
+// 文章摘录
+func (e *SeExefunc) getartmeta(id []byte) (r string) {
+	key := Table[e.tbname].Select.GetPkKey(id) //Table[e.tbname].Ifo.FieldChByte("id", skid)
+	iter, ok := Table[e.tbname].Select.IterSeekMove(key)
+	if !ok {
+		return
+	}
+	meta := string(Table[e.tbname].Split(iter.Value())[0])
+	for len(meta) < e.mlen*3 { //每个中文3个字节
+		ok = iter.Next()
+
+		if !ok {
+			break
+		}
+		meta += " " + string(Table[e.tbname].Split(iter.Value())[0])
+	}
+	keys := Table[e.tbname].Split(iter.Key()) //bytes.Split(rd, []byte(xbdb.Split))
+	artid := string(keys[1])
+	e.lsecid = strings.Split(artid, ",")[1]
+
+	r = meta
+	iter.Release()
+	return
+}
+
+// 将关键词限制在最长7个字内
+func (e *SeExefunc) SetLimitLen() {
+	for i, v := range e.ks {
+		if len([]rune(v)) > 7 {
+			e.ks[i] = Sublen(v, 7)
+		}
+	}
+}
+
+/*
+// 写超时警告日志 通用方法
+
+func TimeoutWarning(tag, detailed string, start time.Time, timeLimit float64) {
+	dis := time.Now().Sub(start).Seconds()
+	if dis > timeLimit {
+		log.Warning(log.CENTER_COMMON_WARNING, tag, " detailed:", detailed, "TimeoutWarning using", dis, "s")
+		//pubstr := fmt.Sprintf("%s count %v, using %f seconds", tag, count, dis)
+		//stats.Publish(tag, pubstr)
+	}
+}
+*/
+//找出最大长度的词
+func getMaxLenKw(ks []string) (s string) {
+	l := 0
+	lv := 0
+	for _, v := range ks {
+		lv = len([]rune(v))
+		if lv >= l {
+			s = v
+			l = lv
+		}
+	}
+	return
+}
+
+func Search() http.HandlerFunc {
+	return DoMiddleware(WebSearch, Pubpars()) //用中间件解耦合为3个HandlerFunc
+}

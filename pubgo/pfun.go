@@ -5,14 +5,24 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
+	"txtresearch/sat"
+
+	"github.com/thinkeridea/go-extend/exnet"
 )
 
 var (
+	CurPath   string
 	ConfigMap map[string]interface{} //配置文件
 )
+
+func Ini() {
+	CurPath = GetCurrentAbPath()
+}
 
 // --截取前 l 个长度字符串
 func Sublen(str string, L int) string {
@@ -46,8 +56,7 @@ func GetKeys(word string) []string {
 // 将关键词按非中文分解成数组
 func GetCnS(word string) []string {
 	reg := regexp.MustCompile(`[\p{Han}]+`) // 查找连续的汉字
-	kws := reg.FindAllString(word, -1)      //,并生成数组
-	return kws
+	return reg.FindAllString(word, -1)      //,并生成数组
 }
 
 // 整形转换成字节
@@ -128,4 +137,50 @@ func Chekerr(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func Jf(str string, s bool) string { //简体转繁体
+	if s {
+		dicter := sat.DefaultDict()
+		if dicter == nil {
+			return ""
+		}
+		return dicter.ReadReverse(str)
+	}
+	return str
+}
+func Fj(str string, s bool) string { //繁体转体简
+	if s {
+		dicter := sat.DefaultDict()
+		if dicter == nil {
+			return ""
+		}
+		return dicter.Read(str)
+	}
+	return str
+}
+
+// 提取所有文件夹的id组合成该文件id
+// dzj\3-论\5-此土著述\151-缁门警训\090-诫观檀越四事从苦缘起出生法 id=3-5-151-090
+func Getdirid(path string) string {
+	xg := strings.Split(path, "\\")
+	var hg []string
+	id := ""
+	for _, xv := range xg {
+		hg = strings.Split(xv, "-")
+		if len(hg) < 2 {
+			println(path)
+		}
+		id += hg[0] + "-"
+	}
+	return strings.Trim(id, "-")
+}
+
+// 获取客户端ip
+func Cip(r *http.Request) string {
+	ip := exnet.ClientPublicIP(r)
+	if ip == "" {
+		ip = exnet.ClientIP(r)
+	}
+	return ip
 }

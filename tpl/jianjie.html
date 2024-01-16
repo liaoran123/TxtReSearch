@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	{{template "static" .}}
+	<title>{{.Text}}--{{jf "佛经见解" .Ift}}--{{jf "千佛网" .Ift}}</title>
+	
+</head>
+
+<body>
+	<div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+		{{template "header" .}}
+		{{template "search" .}}
+		{{template "gomove" .}}
+		<div class="card">
+			<div class="card-header">
+				<!--
+				<p class="text-end fs-6"><a class="badge bg-secondary" href='javascript:' title='" + shoucang + "'><i
+							class="bi-star"></i>收藏</a><span class="badge rounded-pill bg-success">12</span> </p>
+-->
+				<div class="alert alert-dark fs-4">
+					<a id="prevsec" href="javascript:" onclick="openurl(this)" title="{{jf " 上一句" .Ift}}"><i
+							class="bi-arrow-left-circle"></i></a>
+					<span id="text">{{.Text}}</span>
+					<a id="nextsec" href="javascript:" onclick="openurl(this)" title="{{jf " 下一句" .Ift}}"><i
+							class="bi-arrow-right-circle"></i></a>
+				</div>
+				<p class="text-end fs-6">--<a href="{{.Host}}/quanwen/{{.Artid}}{{if .Ift}}?l=1{{end}}">{{.Title}}</a>
+				</p>
+			</div>
+			<SCRIPT LANGUAGE=javascript RUNAT=Server>
+				const acid = getmindstr(window.location.href + "#", "/", "#", true, false)
+				const ids = acid.split(",")
+				const artid = ids[0]
+				const secid = ids[1]
+				$("#prevsec").attr("data-id", artid)
+				$("#nextsec").attr("data-id", artid)
+				var prevsecid = parseInt(secid) - 1
+				if (prevsecid < 0) {
+					$("#prevsec").hide()
+				}
+				$("#prevsec").attr("data-secid", prevsecid.toString())
+				if ($("#text").text() == "") {
+					$("#nextsec").hide()
+				}
+				prevsecid = parseInt(secid) + 1
+				$("#nextsec").attr("data-secid", prevsecid.toString())
+				function openurl(obj) {
+					var ourl = getmindstr(window.location.href, "", "/", false, true)
+					ourl = ourl + "/" + $(obj).attr("data-id") + "," + $(obj).attr("data-secid")
+					window.location.href = ourl;
+				}
+			</SCRIPT>
+			<div class="input-group mb-3">
+				<input id="copyContent" type="text" class="form-control" aria-label="Username"
+					aria-describedby="basic-addon1" value="{{jf " 来发表该经文的见解吧！" .Ift}}">
+				<span class="input-group-text" id="basic-addon1"><b class="badge bg-primary">{{jf "网址已复制到粘贴板"
+						.Ift}}</b></span>
+			</div>
+			<div class="text-center fs-6" style="margin-top: -15px;">
+				<a href="javascript:" id="copyBtn"><b>复制网址给师父、同修等发表见解</b></a>
+			</div>
+			<SCRIPT LANGUAGE=javascript RUNAT=Server>
+				$("#basic-addon1").hide();
+				$("#copyContent").val(window.location.href.split("#")[0] + "#" + $("#copyContent").val())
+				const copyBtn = document.querySelector('#copyBtn');
+				const copyContent = document.querySelector('#copyContent'); // 复制操作要放在事件监听函数里面，由用户触发（比如用户点击按钮）。
+				copyBtn.addEventListener('click', () => {
+					$("#copyContent").val($("#text").text() + "  " + $("#copyContent").val())
+					copyContent.select();
+					document.execCommand('copy');
+					$("#basic-addon1").show();
+				})
+			</SCRIPT>
+		</div>
+
+		<div class="card">
+			{{.Jianjies}}		
+			<div class="card-header" id="tmodal">
+				<div class="card-header">
+					<a href="/user/" id="userurl">
+					<span class="badge bg-secondary">id</span><b class="badge bg-primary" id="tuserid"></b><span
+						class="badge bg-secondary">法号</span><b class="badge bg-primary" id="tfahao"></b></a>	 - <b class="badge bg-secondary" id="tsj"></b>			
+				</div>
+				<div class="card-header" id="tjianjie">
+
+				</div>
+			</div>
+
+			<div class="card-header">
+				<div class="mb-3">
+					
+				</div>
+				<div class="mb-3">
+					<span class="badge bg-secondary">id</span><b class="badge bg-primary" id="bbsuserid"></b> , <span
+						class="badge bg-secondary">法号</span><b class="badge bg-primary" id="bbsfahao"></b>
+					<label for="exampleFormControlTextarea1" class="badge bg-primary fs-6">{{jf "发表见解" .Ift}}</label>
+					<textarea class="form-control" id="Textarea1" rows="7"></textarea>
+				</div>
+				<div class="mb-3">
+					<label for="exampleInputCaptcha" class="form-label">{{jf "验证码" .Ift}}</label>
+					<input type="text" class="form-control" id="code" maxlength="49" onfocus="getCaptcha()">
+					<a href="javascript:" onclick="getCaptcha()"> <img src="" id="capimg"></a>
+					<div id="mpanel2"></div>
+					<button type="button" id="check-btn" data-id="" class="btn btn-primary" onclick="jianjie()">{{jf
+						"确定"
+						.Ift}}</button>
+				</div>
+			</div>
+			<div class="alert alert-warning" role="alert">
+				<strong>{{jf "提示" .Ift}}：</strong><br>
+				{{jf "众生修行层次各个不同，见解、应机等等不同" .Ift}}。
+				<br>
+				{{jf "如“横看成岭侧成峰，远近高低各不同”，亦有如“盲人摸象”或“小马过河”等，互相矛盾等等情况" .Ift}}。
+				<br>
+				{{jf "故而所有见解仅供参考！也不代表本站意见" .Ift}}。
+				<br>
+				{{jf "行者自行鉴别，各取所需" .Ift}}。
+				
+			</div>
+			<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				<strong>{{jf "言论规则、界限" .Ift}}</strong><br>
+				{{jf "该板块仅限佛经见解相关内容，其他言论请到其他板块或平台发表。" .Ift}}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		</div>
+		{{template "footer" .}}
+	</div>
+	<script type="text/javascript">
+	
+		$("#bbsuserid").text($.cookie("id"))
+    	 $("#bbsfahao").text($.cookie("fahao"))
+		$("#tmodal").hide()
+
+		function jianjie() {			
+			userid = $.cookie("id")
+			fahao = $.cookie("fahao")			
+			//if (typeof userid == "undefined") {
+			if (userid == "") {
+				alert("未登陆!")
+				return
+			}
+			text = $("#Textarea1").val()
+			if (text == "") {
+				alert("请输入内容。")
+				return
+			}
+			sectext="{{.Text}}"			
+			var ids=(window.location.href+"#").split("#")[0].split("/")
+			//ids=id.split("/")			
+			var secid=ids[ids.length-1]
+			//var d = new Date();
+			//sj=""//d.toLocaleString()
+			code = $("#code").val();
+			capid = $("#check-btn").attr("data-id")
+			$.post(jjsev+"/jianjie/",
+				{
+					secid:secid,
+					userid:userid,
+					fahao:fahao,					
+					sectext:sectext,
+					text: text,
+					sj:"",
+					code: code,
+					capid: capid
+				},
+				function (result) {					
+					if (result.Succ == true) {
+						alert(result.Info)	
+						$("#tjianjie").text(text)
+						var d = new Date();
+						$("#tsj").text(d.toLocaleString())
+						$("#userurl").attr("href","/user/"+userid)
+						$("#tmodal").show()
+						$("#Textarea1").val("")
+					} else {
+						alert(result.Info)	
+										
+					}
+				}, "json");
+				$("#code").val("")						
+		}
+
+	</script>
+
+</body>
+
+</html>

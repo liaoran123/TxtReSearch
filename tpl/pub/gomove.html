@@ -1,0 +1,9 @@
+{{define "gomove"}}
+<div class="card">
+    <div class="card-body">
+        <a class="float-start" href="javascript:history.go(-1)"><span aria-hidden="true"> <img src="{{.Pubpar.Host}}/static123/bootstrap-icons/arrow-left-short.svg"  width="21" height="21"></span> {{jf "后退"
+            .Pubpar.Ift}}</a>
+        <a class="float-end" href="javascript:history.go(1)"> {{jf "前进" .Pubpar.Ift}} <span aria-hidden="true"><img src="{{.Pubpar.Host}}/static123/bootstrap-icons/arrow-right-short.svg"  width="21" height="21"></span></a>
+    </div>     
+</div>
+{{end}}

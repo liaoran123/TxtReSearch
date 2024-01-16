@@ -1,0 +1,90 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>{{.Title}}--{{jf "千佛网" .Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <div class="card-body">
+                <span class="badge bg-secondary">{{jf "经文" .Ift}}</span> <a
+                    href="{{.Host}}/jianjie/{{.Secid}}"><b>{{.Sectext}}</b></a>
+            </div>
+            <div class="card-header">
+                <div class="card-header">
+                    <span class="badge bg-secondary">{{jf "见解" .Ift}}</span>{{.Text}}                    
+                    <div class="text-end">
+                        <a href="{{.Host}}/user/home/{{.Userid}}"><span class="badge bg-secondary">id</span><b
+                                class="badge bg-primary">{{.Userid}}</b><span class="badge bg-secondary">{{jf "法号"
+                                .Ift}}</span><b class="badge bg-primary">{{.Fahao}}</b></a> - <b
+                            class="badge bg-secondary" id="fbsj">{{.Sj}}</b>
+                    </div>
+                </div>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert" id="del">
+                    <strong>{{jf "提示" .Ift}}</strong><br>
+                    {{jf "发布见解后，只可在3天内删除。" .Ift}}<br>
+                    {{jf "如需要修改，可先删除，后添加。" .Ift}}<br>
+                    <div class="mb-3">
+                        <label for="exampleInputCaptcha" class="form-label"><b>{{jf "验证码" .Ift}}</b></label>
+                        <input type="text" class="form-control" id="code" maxlength="49" onfocus="getCaptcha()">
+                        <a href="javascript:" onclick="getCaptcha()"> <img src="" id="capimg"></a>
+                        <div id="mpanel2"></div>
+                        <button type="button" id="check-btn" data-id="123456" class="btn btn-primary" onclick="deletejj()">{{jf
+                            "删除见解" .Ift}}</button>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+
+        </div>
+       
+
+        <script>
+            if ($.cookie("id") == "{{.Userid}}") {
+                $("#del").show()
+            } else {
+                $("#del").hide()
+            }
+            function deletejj() {
+                code = $("#code").val();
+                capid = $("#check-btn").attr("data-id")
+                if (code == "" || capid == "") {
+                    alert("请输入验证码。")
+                    return
+                }
+
+                $.post(jjsev + "/jianjie/",
+                    {
+                        code: code,
+                        capid: capid,
+                        type: "0",//浏览器不支持“delete”，只能通过post转
+                        id: {{.Id }},
+            userid: $.cookie("id")		
+				},
+            function (result) {
+                console.log(result)
+                if (result.Succ == true) {
+                    alert(result.Info)
+                    window.location.href = "/user/home/{{.Id}}"
+                } else {
+                    alert(result.Info)
+                    $("#code").val("")
+                }
+            }, "json");	
+            }
+
+            if (getDifferenceTime($("#fbsj").text()) > 3) {//超过3天，不显示删除框               
+                $("#del").hide()
+            }
+        </script>
+        {{template "footer" .}}
+</body>
+
+</html>

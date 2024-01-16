@@ -1,0 +1,42 @@
+<html>
+
+<head>
+    {{template "static" .}}
+    <title>{{jf "赞助我们--搜佛说" .Pubpar.Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">          
+             <div class="card-header">
+                <h2>
+                    {{jf "赞助我们--搜佛说" .Pubpar.Ift}}
+                </h2>               
+            </div>         
+            <div class="card-header">
+                有您的支持，我们才能走得更远！！！
+            </div>
+            <div class="panel-body" style="text-align: center;width: 180;">               
+                <img src="{{.Pubpar.Host}}/static123/img/zfb.jpg"/>                    
+              </div>
+            <div class="card-header">
+                {{jf "支付宝账号" .Pubpar.Ift}}：<span id="zfbemial"></span>@qq.com
+            </div>
+            <div class="card-header">
+                paypal ：<a  href="https://PayPal.Me/1000fo">PayPal.Me/1000fo</a>。
+            </div>
+            <div class="card-header">
+                <b>费用用于网站开发运营等。</b> 
+            </div>
+            <script>
+                $("#zfbemial").text("2065551801")       
+            </script>
+        </div>
+        {{template "footer" .}}
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {{template "static" .}}
+    <title>{{jf "四库全书-四库全书在线考据级别检索，阅读，朗读-搜佛说" .Pubpar.Ift}}</title>
+    <meta name="description" content="搜佛说提供国学四库全书等传统文化智慧考据级别的检索和在线全文阅读，朗读。" />
+</head>
+
+<body style="font-size: 16px;">
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+
+        <div class="card-body"></div>
+
+        <div class="card">
+            <div class="card-header">
+                {{jf "今天热搜" .Pubpar.Ift}}:
+                {{$host:=.Pubpar.Host}}
+                {{range $v := .Sehot}}
+                <a class="badge bg-secondary" href="{{$host}}/s/{{$v}}">{{$v}}</a>
+                {{end}}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                {{jf "优惠好物" .Pubpar.Ift}}:
+               
+                <a class="badge bg-primary" href="/taobao/?kw=四库全书">四库全书</a>
+                <a class="badge bg-primary" href="/taobao/?kw=大藏经">大藏经</a>
+                <a class="badge bg-primary" href="/taobao/?kw=史记">史记</a>
+                <a class="badge bg-primary" href="/taobao/?kw=八卦">八卦</a>
+                <a class="badge bg-primary" href="/taobao/?kw=佛珠">佛珠</a>
+                <a class="badge bg-primary" href="/taobao/?kw=吊坠">吊坠</a>
+                <a class="badge bg-primary" href="/taobao/?kw=止咳药">止咳药</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5>{{jf "今天热文" .Pubpar.Ift}}</h5>
+                <div class="card-header">
+                    {{$host:=.Pubpar.Host}}
+                    {{range $i, $v := .Ahot}}
+                    <div>
+                        {{$i}}.<a class="link-secondary" href="{{$host}}/art/{{$v.Id}}">{{$v.Title}}</a>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="card-body text-center">
+        <b>{{jf "考据级别搜索" .Pubpar.Ift}}</b>
+        <br />
+        {{jf "本站自主研发，只要收录的书中存在，同一个句子中(以“。”分割)，7个字内，使用任何字、词、句，理论上100%搜索到结果" .Pubpar.Ift}} 。
+        <br />
+        {{jf "其他搜索引擎包括AI领域，皆会有因分词技术原因，无法做到100%搜索出结果，达不到考据级别" .Pubpar.Ift}}。
+        <br /><br />
+        <b class="link-danger">本站承接海内外网站、桌面开发等业务，欢迎联系！</b>
+        <br />
+        <br />
+        <b>{{jf "四库全书" .Pubpar.Ift}}</b>
+        <br />
+        {{jf "共收书3503种，79337卷，近230万页，约8亿字" .Pubpar.Ift}} 。
+        <br />
+        {{jf "提供10万卷，近13亿字古籍文本，约3.14 GB" .Pubpar.Ift}}。
+        <br />
+        {{jf "包含有少部分繁体文章" .Pubpar.Ift}}。
+       
+    </div>
+    </div>
+
+    {{template "footer" .}}
+
+</body>
+
+</html>

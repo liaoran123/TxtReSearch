@@ -1,0 +1,71 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>{{jf "用户后台--千佛网" .Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <!-- Default panel contents -->
+            <div class="card-header">
+                <h2 id="cfahao">
+                </h2>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <b>{{jf "我的" .Ift}}</b>
+            </div>
+            <div class="card-header">
+                <a id="jianjieurl" href="#">{{jf "见解" .Ift}}</a>
+            </div>
+            <div class="card-header">
+                <a id="qunzuurl" href="javascript:" class="link-secondary">{{jf "答疑堂" .Ift}}</a>
+            </div>
+            <div class="card-header">
+                <a id="qunzuurl" href="javascript:" class="link-secondary">{{jf "专栏" .Ift}}</a>
+            </div>
+            <div class="card-header">
+                <a id="qunzuurl" href="javascript:" class="link-secondary">{{jf "群组" .Ift}}</a>
+            </div>
+            <div class="card-header">
+                <a id="wenzhangurl" href="javascript:" class="link-secondary">{{jf "文章" .Ift}}</a>
+            </div>
+            <div class="card-header">
+                <a id="pinglunurl" href="javascript:" class="link-secondary">{{jf "评论" .Ift}}</a>
+            </div>
+            <div class="card-header">
+                <a id="shoucangurl" href="javascript:" class="link-secondary">{{jf "收藏" .Ift}}</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <b>{{jf "设置" .Ift}}</b>
+            </div>
+            <div class="card-header">
+                <a id="xiugaimima" href="javascript:" class="link-secondary">{{jf "修改密码" .Ift}}</a>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        $("#cfahao").text($.cookie("fahao"))      //搜索类型 ，经律论名
+        $("#jianjieurl").attr("href", "{{.Host}}/user/jianjie/" + $.cookie("id"))
+            /*
+$("#wenzhangurl").attr("href","{{.Host}}/user/wz/"+$.cookie("id"))
+$("#pinglunurl").attr("href","{{.Host}}/user/pl/"+$.cookie("id"))
+$("#qunzuurl").attr("href","{{.Host}}/user/qz/"+$.cookie("id"))
+$("#shoucangurl").attr("href","{{.Host}}/user/sc/"+$.cookie("id"))
+*/
+    </script>
+    {{template "footer" .}}
+</body>
+
+</html>

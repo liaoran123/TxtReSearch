@@ -1,0 +1,201 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>{{.Title}}--{{jf "千佛网" .Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+
+            <div class="card-body">
+                <div class="card-header">
+                    {{jf "所属群组" .Ift}}:<a href="{{.Host}}/qzwz/{{.Type}}"><b>{{.Typename}}</b></a>
+                </div>
+                <h3>{{.Title}}</h3>
+                <div class="card-header">
+                    <a href="{{.Host}}/user/home/{{.Userid}}"><span class="badge bg-secondary">id</span><span
+                            class="badge bg-primary">{{.Userid}}</span><span class="badge bg-secondary">{{jf "法号"
+                            .Ift}}</span><span class="badge bg-primary">{{.Fahao}}</span></a> , <span id="fbsj"
+                        class="badge bg-secondary">{{.Sj}}</span>
+                </div>
+            </div>
+            <div class="card-header">
+                {{.Text}}
+            </div>
+
+
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>{{jf "评论/讨论" .Ift}}</h3>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a id="pldx" class="nav-link" aria-current="page"
+                            href="{{.Host}}/wz/{{.Id}}{{if .Ift}}?l=1{{end}}"><b>最新</b></a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="plsx" class="nav-link" aria-current="page"
+                            href="{{.Host}}/wz/{{.Id}}?asc=1{{if .Ift}}&l=1{{end}}"><b>最早</b></a>
+                    </li>
+                </ul>
+
+            </div>
+            {{.Plhtml}}
+        </div>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="del">
+            <strong>{{jf "提示" .Ift}}</strong><br>
+            {{jf "发布文章后，只可在3天内删除。" .Ift}}<br>
+            {{jf "如需要修改，可先删除，后添加。" .Ift}}<br>
+            <div class="mb-3">
+                <label for="exampleInputCaptcha" class="form-label"><b>{{jf "验证码" .Ift}}</b></label>
+                <input type="text" class="form-control" id="codedel" maxlength="49" onfocus="getDelQzCaptcha()">
+                <a href="javascript:" onclick="getDelQzCaptcha()"> <img src="" id="capimgdel"></a>
+                <div id="mpanel2"></div>
+                <button type="button" id="btndel" data-id="123456" class="btn btn-primary" onclick="deletejj()">{{jf
+                    "确定删除" .Ift}}</button>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card">
+            <div class="mb-3">
+                <span class="badge bg-secondary">id</span><b class="badge bg-primary" id="bbsuserid"></b> , <span
+                    class="badge bg-secondary">法号</span><b class="badge bg-primary" id="bbsfahao"></b>
+                <label for="exampleFormControlTextarea1" class="badge bg-primary fs-6">{{jf "发表评论" .Ift}}</label>
+            </div>
+
+            <div class="mb-3">
+                <textarea class="form-control" id="cont" rows="7"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputCaptcha" class="form-label">{{jf "验证码" .Ift}}</label>
+                <input type="text" class="form-control" id="code" maxlength="49" onfocus="getCaptcha()">
+                <a href="javascript:" onclick="getCaptcha()"> <img src="" id="capimg"></a>
+                <div id="mpanel2"></div>
+                <button type="button" id="check-btn" data-id="" class="btn btn-primary" onclick="InsPl()">{{jf
+                    "确定"
+                    .Ift}}</button>
+            </div>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{jf "言论规则、界限" .Ift}}</strong><br>
+                {{jf "该板块仅限佛法或相关如法内容，其他言论请到其他平台发表。" .Ift}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <script>
+            //设置活动页
+            if (window.location.href.indexOf("?") == -1) {
+                $("#pldx").addClass("active")
+            } else {
+                $("#plsx").addClass("active")
+            }
+
+            if ($.cookie("id") == "{{.Userid}}") {
+                $("#deljj").show()
+            } else {
+                $("#deljj").hide()
+            }
+            $("#bbsuserid").text($.cookie("id"))
+            $("#bbsfahao").text($.cookie("fahao"))
+            function getDelQzCaptcha() {
+                btnobj = $("#btndel")
+                imgobj = $("#capimgdel")
+                getCaptchaToObj(btnobj, imgobj)
+            }
+            function deletejj() {
+                fahao = $.cookie("fahao")
+                if (fahao == "") {
+                    alert("请先登录！")
+                    return
+                }
+                userid = $.cookie("id")
+
+                code = $("#codedel").val();
+                capid = $("#btndel").attr("data-id")
+                if (code == "" || capid == "") {
+                    alert("请输入验证码。")
+                    return
+                }
+
+                $.post(jjsev + "/pubtb/",
+                    {
+                        code: code,
+                        capid: capid,
+                        tbname: "wz",
+                        method: "DELETE",//浏览器不支持“delete”，只能通过post转
+                        timeoutfield: "sj",
+                        id: {{.Id }},
+            userid: $.cookie("id")		
+				},
+            function (result) {
+                console.log(result)
+                if (result.Succ == true) {
+                    alert(result.Info)
+                    window.location.href = "/user/home/" + $.cookie("id")
+                } else {
+                    alert(result.Info)
+                    $("#code").val("")
+                }
+            }, "json");	
+            }
+
+            if (getDifferenceTime($("#fbsj").text()) > 3) {//超过3天，不显示删除框
+                $("del").hide()
+            }
+
+            function InsPl() {
+                fahao = $.cookie("fahao")
+                if (fahao == "") {
+                    alert("请先登录！")
+                    return
+                }
+                userid = $.cookie("id")
+                cont = $("#cont").val().trim()
+                if (cont == "") {
+                    alert("请输入内容。")
+                    return
+                }
+                code = $("#code").val();
+                capid = $("#check-btn").attr("data-id")
+                if (code == "" || capid == "") {
+                    alert("请输入验证码。")
+                    return
+                }
+                $.post(jjsev + "/pubtb/",
+                    {
+                        tbname: "pl",
+                        userid: userid,
+                        fahao: fahao,
+
+                        cont: cont,
+                        code: code,
+                        capid: capid,
+                        method: "POST",
+                        qzid: {{.Type }},
+                        wtitle: {{.Title }},
+                        wid: {{.Id }}			
+				},
+            function (result) {
+                console.log(result)
+                if (result.Succ == true) {
+                    location.reload()
+                    alert(result.Info)
+                    //window.location.href="/pl/"+result.LastId
+                } else {
+                    alert(result.Info)
+                    $("#code").val("")
+                }
+            }, "json");
+		}
+        </script>
+        {{template "footer" .}}
+</body>
+
+</html>

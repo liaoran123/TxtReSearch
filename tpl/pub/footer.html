@@ -1,0 +1,61 @@
+{{define "footer"}}
+<div class="text-center">
+  <br> <br>
+<a href="{{.Pubpar.Host}}/dir/01" title="易藏目录、检索">易藏</a>|<a href="{{.Pubpar.Host}}/dir/02" title="儒藏目录、检索">儒藏</a>|<a href="{{.Pubpar.Host}}/dir/03" title="道藏目录、检索">道藏</a>|<a href="{{.Pubpar.Host}}/dir/05" title="子藏目录、检索">子藏</a>|
+<a href="{{.Pubpar.Host}}/dir/06" title="史藏目录、检索">史藏</a>|<a href="{{.Pubpar.Host}}/dir/07" title="诗藏目录、检索">诗藏</a>|<a href="{{.Pubpar.Host}}/dir/08" title="集藏目录、检索">集藏</a>|                  
+<a href="{{.Pubpar.Host}}/dir/09" title="医藏目录、检索">医藏</a>|<a href="{{.Pubpar.Host}}/dir/10" title="艺藏目录、检索">艺藏</a>|<a href="{{.Pubpar.Host}}/dir/11" title="龙藏(乾隆大藏经)目录、检索">龙藏(乾隆大藏经)</a>                  
+<br><br>
+    <a href="{{.Pubpar.Host}}/pcv/" class="badge bg-primary">{{jf "赞助" .Pubpar.Ift}}</a>
+    <br>
+    达108元，送<a href="{{.Pubpar.Host}}/research/">{{jf "四库全书考据级搜索系统电脑版" .Pubpar.Ift}}</b></a>
+    <br>
+    <!--
+    <a href="{{.Pubpar.Host}}/research/"><b>{{jf "TxtReSearch考据级搜索系统" .Pubpar.Ift}}</b></a>-->
+    <br>
+    {{jf "搜佛说，传承" .Pubpar.Ift}}<a href="{{.Pubpar.Host}}/home/">{{jf "国学" .Pubpar.Ift}}</a><a
+        href="{{.Pubpar.Host}}/home/">{{jf "传统文化" .Pubpar.Ift}}</a>{{jf "智慧" .Pubpar.Ift}}
+    <br>
+    <a href="{{.Pubpar.Host}}/metas/?p=1">{{jf "精选摘录" .Pubpar.Ift}}</a> | <a href="{{.Pubpar.Host}}/shuoming/">{{jf "搜索说明" .Pubpar.Ift}}</a> | <a href="javascript:"
+        id="retop">{{jf "返回顶部" .Pubpar.Ift}}</a>
+    <br>
+    {{jf "联系" .Pubpar.Ift}}：
+    <br>    
+    <a href="javascript:0"><img id="wx" width="21px" src="https://ts2.cn.mm.bing.net/th?id=ODLS.67039818-bc45-45cf-8770-baa8972cafa0&w=32&h=32&qlt=90&pcl=fffffa&o=6&pid=1.2" /></a> -  
+    <img  width="21px" src="https://ts1.cn.mm.bing.net/th?id=ODLS.394b5f18-5315-46a2-9941-3be519c1624a&w=32&h=32&qlt=91&pcl=fffffa&o=6&pid=1.2" /><span id="qq"></span> - 
+    <span id="email"></span>
+
+<div class="text-center">     
+<div id="liveToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        <img width="160px" id="wxerweima" />
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+    <br>
+    ©2019/11/11-<a href="{{.Pubpar.Host}}/home/">{{jf "四库全书" .Pubpar.Ift}}</a>({{jf "国际站" .Pubpar.Ift}})
+    <br>
+    {{jf "向世界传播" .Pubpar.Ift}}<a href="{{.Pubpar.Host}}/home/">{{jf "中国文化" .Pubpar.Ift}}</a>!
+</div>
+<div class="card-body">
+</div>
+<script>
+    $("#cid").text($.cookie("id"))
+    $("#cfahao").text($.cookie("fahao"))
+    $("#email").text("sfsweb@qq.com")   
+    $("#qq").text("2065551801")    
+    
+    const toastTrigger = document.getElementById('wx')
+const toastLiveExample = document.getElementById('liveToast')
+if (toastTrigger) {
+  toastTrigger.addEventListener('click', () => {
+    const toast = new bootstrap.Toast(toastLiveExample)
+    $("#wxerweima").attr("src","{{.Pubpar.Host}}/static123/img/psc.jpg")
+    toast.show()
+  })
+}
+</script>
+</div>
+{{end}}

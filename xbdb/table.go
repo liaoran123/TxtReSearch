@@ -146,13 +146,19 @@ func (t *Table) AddFullIdx(vals [][]byte, Act string, updatefield []bool) (r ReI
 		}
 		cc := Newcheckchar(t.Ifo.Diychar)
 		kws := cc.Analysis(string(vals[idx]), patterns)
-		for i, v := range kws {
+		fpos := 0 //记录字在文件中的位置
+		for _, v := range kws {
+			//for i, v := range kws {
+			fpos++ //kws是按非中文Split分割，故而每个循环都需要+1
 			if v == "" {
 				continue
 			}
 			ftIdx = t.ForDisparte(v, ftlen)
-			for p, f := range ftIdx {
-				r = t.ActIDX([]byte(t.Ifo.Fields[idx]), []byte(f), vals[0], IntToBytes(p+i), Act)
+			//for p, f := range ftIdx {
+			for _, f := range ftIdx {
+				fpos = fpos + 3 //中文的长度为3
+				//r = t.ActIDX([]byte(t.Ifo.Fields[idx]), []byte(f), vals[0], IntToBytes(p+i), Act)
+				r = t.ActIDX([]byte(t.Ifo.Fields[idx]), []byte(f), vals[0], IntToBytes(fpos), Act)
 				if !r.Succ {
 					return
 				}

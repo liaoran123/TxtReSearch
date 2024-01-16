@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	{{template "static" .}}
+	<title>{{jf "注册--千佛网" .Ift}}</title>
+
+</head>
+
+<body>
+	<div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+		{{template "header" .}}
+		{{template "search" .}}
+		{{template "gomove" .}}
+		<div class="card">
+			<div class="card-header">
+				<div class="row" style="max-width: 360px; margin-right: auto; margin-left: auto;">
+					<h1>{{jf "千佛网注册" .Ift}}</h1>
+					<div class="mb-3">
+						<SCRIPT LANGUAGE=javascript RUNAT=Server>
+							function isEmail(strEmail) {
+								if (strEmail.search(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/) != -1)
+									$("#emailHelp").hide();
+								else
+									$("#emailHelp").show();
+							}
+						</SCRIPT>
+						<label for="exampleInputEmail1" class="form-label">{{jf "邮箱地址" .Ift}}</label>
+						<input type="email" class="form-control" id="Email" maxlength="108" onblur=isEmail(this.value)>
+						<div id="emailHelp" class="form-text"><span class="badge bg-danger">
+								{{jf "邮箱格式不正确" .Ift}}.</span></div>
+					</div>
+					<div class="mb-3">
+						<label for="exampleInputEmail1" class="form-label">{{jf "法号" .Ift}}</label>
+						<input type="text" class="form-control" id="regfahao" maxlength="21" value="妙音">
+
+					</div>				
+					<div class="mb-3">
+						<label for="exampleInputPassword1" class="form-label">{{jf "密码" .Ift}}</label>
+						<input type="password" class="form-control" id="Password1" maxlength="49">
+					</div>
+					<div class="mb-3">
+						<label for="exampleInputPassword1" class="form-label">{{jf "确认密码" .Ift}}</label>
+						<input type="password" class="form-control" id="Password2" maxlength="49">
+					</div>
+					<div class="mb-3">
+						<label for="exampleInputCaptcha" class="form-label">{{jf "验证码" .Ift}}</label>
+						<input type="text" class="form-control" id="code" maxlength="49" onfocus="getCaptcha()">
+						<a href="javascript:" onclick="getCaptcha()"> <img src="" id="capimg" ></a>
+						<div id="mpanel2"></div>
+						<button type="button" id="check-btn" data-id="123456" class="btn btn-primary" onclick="Ins()">{{jf "确定" .Ift}}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{template "footer" .}}
+	</div>
+	<script type="text/javascript">		
+		
+		
+		function Ins() {
+			email = $("#Email").val().trim()
+			if (Email == "") {
+				alert("请输入邮箱。")
+				return
+			}
+			
+			fahao = $("#regfahao").val().trim();
+			if (fahao == "") {
+				alert("请输入法号。")
+				return
+			}
+			Password1 = $("#Password1").val().trim();
+			if (Password1 == "") {
+				alert("请输入密码。")
+				return
+			}
+			Password2 = $("#Password2").val().trim();
+			if (Password1 != Password2) {
+				alert("两次密码不相同。")
+				return
+			}
+			code=$("#code").val();
+			capid =$("#check-btn").attr("data-id")	
+			if (code=="" || capid==""){
+                alert("请输入验证码。")
+                return
+            }	
+			
+			$.post(jjsev+"/user/",
+				{					
+					email: email,
+					fahao: fahao,
+					psw: Password1,
+					code:code,
+					capid: capid				
+				},
+				function (result) {
+					console.log(result)
+					if (result.Succ == true) {
+						alert(result.Info)
+						window.location.href="/login/"
+					}else{
+						alert(result.Info)
+						$("#code").val("")	
+					}
+				}, "json");
+		}
+
+
+	</script>
+
+</body>
+
+</html>

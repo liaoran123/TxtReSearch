@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>{{jf "招募--千佛网" .Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">          
+             <div class="card-header">
+                <h2>
+                    {{jf "招募义工" .Ift}}
+                </h2>               
+            </div>         
+           
+       
+           
+            <div class="card-header">
+                <h3>前言</h3>
+            </div>
+            <div class="card-header">
+                <b>千佛网现阶段任务是</b> ：<br>
+                根据佛教弘法方式特点移植到网络上，既要利用互联网优势，同时也需规避互联网的缺点，以便更好利用互联网弘法。<br>
+                <br>
+                现阶段规划的项目有：<br>
+                <h4>1,答疑堂</h4> 
+                问答系统可以创建个人(如法师、大德)等专栏问答、也可以创建道场为主体的专栏问答；<br>
+                也可以创建某一个宗派、法门或某一领域的专栏问答等等。<br>
+                <h4>2,轻博客</h4> 
+                用于著作、开示、随笔等等。<br><br>
+                如有建议，欢迎联系！。   
+                <br><br>
+                经分析研究，决定开发一个组件式结构内容系统，ComCMS。  <br>
+                通过各种组合，即能解决上面的开发要求，以及将来可能需要的需求。 <br>          
+            </div>
+            <div class="card-header">
+                现招募：
+                <h3>开发工程师</h3>
+            </div>
+            <div class="card-header">
+                现招web前后端开发人员，以开源项目方式开发。<br><br>
+                ComCMS开源地址： <br>            
+                <a  href="https://github.com/liaoran123/ComCMS">github</a><br><br>
+交流： <br>
+                <a  href="https://gitter.im/ComCMS1/community">gitter</a><br><br>
+                现已完成xbdb，research项目。<br>
+                答疑堂和轻博客正在着手中，欢迎加入！<br>
+            </div>
+            <div class="card-header">                
+                <h3>其他</h3>
+            </div>
+            <div class="card-header"> 
+                暂无。 </div>
+            <script>
+                $("#zfbemial").text("2065551801")       
+            </script>
+        </div>
+        {{template "footer" .}}
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {{template "static" .}}
+  <title>相关词</title>
+</head>
+
+<body style="font-size: 16px;">
+  <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+    {{template "header" .}}
+    {{template "search" .}}
+    {{template "gomove" .}}
+   
+    <div class="card" id="Htmls">
+      {{$host:=.Pubpar.Host}}
+      <div class="card-body">        
+        {{range $v := .Kws}}
+        <a class="badge bg-secondary" href="{{$host}}/s/{{$v}}">{{$v}}</a>
+        {{end}}
+      </div>
+      <div class="card-header">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {{range $c,$v := .Chs}}
+                <li class="page-item"><a class="page-link" href="{{$host}}/kwas/{{$c}}">{{$c}}</a></li>
+                {{end}}
+            </ul>
+        </nav>
+    </div>
+    </div>
+  </div>
+  {{template "footer" .}}
+</body>
+
+</html>

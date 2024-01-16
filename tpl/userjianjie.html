@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>{{.Fahao}}--{{jf "千佛网" .Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <!-- Default panel contents -->
+            <div class="card-header">
+                id:{{.Id}}
+                <h2>
+                    {{.Fahao}}
+                </h2>            
+            </div>
+          
+            <div class="card-header">
+              {{.Jianjies}}
+            </div>
+           
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {{if ne .P ""}}
+                        <li class="page-item"><a class="page-link" href="javascript:history.back();">{{jf "上一页"
+                                .Ift}}</a></li>
+                        {{end}}
+                        {{if eq .Pct 21}}
+                        <li class="page-item"><a class="page-link"
+                                href="{{.Host}}/user/{{.Pn}}{{if .Ift}}&l=1{{end}}">{{jf
+                                "下一页" .Ift}}</a></li>
+                        {{end}}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <script>
+            //$("#userid").text($.cookie('id')) 
+            //$("#fahao1").text($.cookie('fahao')) 
+        </script>
+        {{template "footer" .}}
+</body>
+
+</html>

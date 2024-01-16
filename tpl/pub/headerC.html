@@ -1,0 +1,51 @@
+{{define "header"}}  
+    <div class="text-end">     
+      <span><a class="badge bg-primary" href="{{.Pubpar.Host}}/dir/" title="{{jf "四库全书目录" .Pubpar.Ift}}">{{jf "目录" .Pubpar.Ift}}</a></span> - 
+        <span  id="nodenglu">
+          <a class="badge bg-secondary" href="{{.Pubpar.Host}}/#" >{{jf "注册" .Pubpar.Ift}}</a> | 
+          <a  class="badge bg-secondary" href="{{.Pubpar.Host}}/#">{{jf "登陆" .Pubpar.Ift}}</a>              
+        </span> 
+        <span  id="denglu">
+          <a  id="userurl" class="badge bg-info" href=""><b id="fahao"></b></a> |
+          <a  class="badge bg-info" href="javascript:" onclick="delcookie()">{{jf "退出" .Pubpar.Ift}}</a>
+        </span>
+         -  
+        <span >
+            {{if .Pubpar.Ift}}
+            <a  href="javascript:"  onclick="jt()"><span id="jianti" class="badge bg-secondary" >简体</span></a>
+            {{else}}
+            <a  href="javascript:" onclick="ft()"><span id="fanti" class="badge bg-secondary" >繁體</span></a>
+            {{end}}          
+        </span>
+      </div>
+<SCRIPT LANGUAGE=javascript RUNAT=Server>        
+  let id="{{.Pubpar.Ucook.Id}}"
+ 
+if (id=="") {
+  // if (id=="") {
+    $("#nodenglu").show()
+    $("#denglu").hide()
+  }else{
+    $("#nodenglu").hide()
+    $("#denglu").show()
+    $("#fahao").text("{{.Pubpar.Ucook.Name}}")
+    $("#userurl").attr("href","{{.Pubpar.Host}}/user/"+id)
+  }
+  function delcookie(){             
+    $.get("/delcookie/");                      
+    $("#nodenglu").show()
+    $("#denglu").hide()
+    alert("您已安全退出。")
+  }
+  function ft(){
+    $.ajaxSettings.async = false; //同步
+    $.get("/ft/?l=1");
+    window.location.reload()
+  }
+  function jt(){
+    $.ajaxSettings.async = false;//同步
+    $.get("/ft/?l=0");
+    window.location.reload()
+  }
+</SCRIPT>
+{{end}}

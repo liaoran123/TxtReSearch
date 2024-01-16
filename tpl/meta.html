@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {{template "static" .}}
+    <meta http-equiv="expires" content="2592000">
+    <meta name="keyWords" content='国学传统文化《{{jf .Titile .Pubpar.Ift}}》{{jf "全文在线阅读，语音朗读" .Pubpar.Ift}}' />
+    <meta name="description" content='国学传统文化《{{jf .Titile .Pubpar.Ift}}》{{jf "四库全书精选语录摘录在线阅读，语音朗读" .Pubpar.Ift}}' />
+
+    <title>{{jf .Titile .Pubpar.Ift}}-{{jf "四库全书精选语录摘录在线阅读，语音朗读" .Pubpar.Ift}}--{{jf "国学传统文化四库全书--搜佛说" .Pubpar.Ift}}
+    </title>
+</head>
+
+<body style="font-size: 16px;">
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <div class="card-header">
+                {{$host:=.Pubpar.Host}}
+                <a href="{{$host}}/dir/" title="四库全书目录">{{jf "四库全书" .Pubpar.Ift}}</a> /
+                {{range $ds := .Dirs}}
+                <a href="{{$host}}/dir/{{.Did}}" title="{{.Name}}目录、检索">{{.Name}}</a> /
+                {{end}}
+                <a href="{{$host}}/art/{{.Aid}}" title="{{.Atitle}}全文在线阅读，朗诵">{{.Atitle}}</a>
+            </div>
+            <div class="card-header  text-center">
+                <h3>{{jf .Titile .Pubpar.Ift}}</h3>
+            </div>
+
+            <div class="card-header text-center">
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                    <button type="button" class="btn btn-outline-primary" id="play" title="开始语音朗读"><img src="{{.Pubpar.Host}}/static123/bootstrap-icons/caret-right-square.svg"  width="21" height="21"></button>
+                    <button type="button" class="btn btn-outline-primary" id="pause" title="停止语音朗读"><img src="{{.Pubpar.Host}}/static123/bootstrap-icons/stop-btn.svg"  width="21" height="21"></button>
+                </div>
+            </div>
+            <div class="card-header" id="jingwennr">
+                {{.Text}}
+            </div> 
+                   
+        </div>
+    </div>
+    <script>
+        var rdata = $("#jingwennr").html()
+        rdata = rdata.replace(new RegExp("\n", "g"), "<br/>")
+        debugger
+        var hashstr=decodeURI(window.location.hash)
+        hashstr=hashstr.replace(new RegExp("#", "g"), "")
+        if (hashstr!="")
+            rdata = rdata.replace(new RegExp(hashstr, "g"), "<b>"+hashstr+"</b>")
+        $("#jingwennr").html(rdata)
+
+    </script>
+    {{template "footer" .}}
+</body>
+
+</html>

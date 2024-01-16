@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	{{template "static" .}}
+	<title>{{jf "群组--千佛网" .Ift}}</title>
+
+</head>
+
+<body>
+	<div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+		{{template "header" .}}
+		{{template "search" .}}
+		{{template "gomove" .}}
+		<div class="card">
+			<div class="card-header">
+				<div class="card-body">
+					{{.Qulist}}
+				</div>
+			</div>
+			<div class="card-header" >
+				<div id="tjqzdiv" class="row" style="max-width: 360px; margin-right: auto; margin-left: auto;">
+					<div class="mb-3">
+						<b>{{jf "添加群组" .Ift}}</b>，最多可以创建3个群组
+					</div>				
+					<div class="mb-3">
+						<label for="exampleInputEmail1" class="form-label"><b>{{jf "名称" .Ift}}</b></label>
+						<input type="text" class="form-control" id="Inputmc" maxlength="49">						
+					</div>
+					<div class="mb-3" id="qunzulx" data-lx="0">	
+						<label for="basic-url" class="form-label"><b>{{jf "群类型" .Ift}}</b>,<b>{{jf "公共" .Ift}}</b>和<b>{{jf "群组" .Ift}}</b>可以切换</label>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault0" checked>
+							<label class="form-check-label" for="flexRadioDefault1"  >
+							  公共（所有注册会员可以发帖。）
+							</label>
+						  </div>
+						  <div class="form-check">
+							<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" >
+							<label class="form-check-label" for="flexRadioDefault2"  >
+							 群组（仅加入群组会员可以发帖。）
+							</label>
+						  </div>	
+						  <div class="form-check">
+							<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+							<label class="form-check-label" for="flexRadioDefault2" >
+								专栏（仅限自己可以发帖。）
+							</label>
+						  </div>										
+					</div>
+					<div class="mb-3">
+						<label for="exampleInputEmail1" class="form-label"><b>{{jf "描述" .Ift}}</b> {{jf "(限200字内)"
+							.Ift}}</label>
+						<textarea class="form-control" id="Textareajianjie" rows="7"></textarea>
+					</div>
+					<div class="mb-3">
+						<a href="#yzm"></a>
+						<label for="exampleInputCaptcha" class="form-label">{{jf "验证码" .Ift}}</label>
+						<input type="text" class="form-control" id="code" maxlength="49" onfocus="getCaptcha()">
+						<a href="javascript:" onclick="getCaptcha()"> <img src="" id="capimg"></a>
+						<div id="mpanel2"></div>
+						<button type="button" id="check-btn" data-id="123456" class="btn btn-primary"
+							onclick="Insqz()">{{jf
+							"添加"
+							.Ift}}</button>						
+				</div>
+			</div>
+		</div>
+		{{template "footer" .}}
+	</div>
+	<script type="text/javascript">
+		$("#qziddiv").hide()
+		$("#del-btn").hide()
+		userid="{{.Id}}"
+		if ($.cookie("id")!=userid){
+			$("#tjqzdiv").hide()
+		}
+		function putqzdata(obj) {
+			id = $(obj).attr("data-id")
+			$("#quid").text(id)
+			bt = $(obj).attr("data-bt")
+			//$("#del-btn").attr("data-id",id)	
+			$("#qziddiv").show()
+			$("#del-btn").show()
+			$("#Inputmc").val(bt)
+		}
+		function xuanzelx(obj){
+			var id=$(this).attr("id")
+			debugger
+			xzid=id.replace("flexRadioDefault","")
+			$("#qunzulx").attr("data-lx",xzid)
+		}
+		function Insqz() {
+			fahao = $.cookie("fahao")
+			if (fahao == "") {
+				alert("请先登录！")
+				return
+			}
+			userid = $.cookie("id")
+
+			mc = $("#Inputmc").val().trim()
+			if (mc == "") {
+				alert("请输入名称。")
+				return
+			}
+			lx="0"								
+			if ($("#flexRadioDefault0").prop("checked")){ //不能用attr
+				lx="0"			
+			}
+			if ($("#flexRadioDefault1").prop("checked")){ //不能用attr
+				lx="1"				
+			}
+			if ($("#flexRadioDefault2").prop("checked")){ //不能用attr
+				lx="2"				
+			}
+			
+			jianjie = $("#Textareajianjie").val().trim();
+
+			code = $("#code").val();
+			capid = $("#check-btn").attr("data-id")
+			if (code == "" || capid == "") {
+				alert("请输入验证码。")
+				return
+			}
+			$.post(jjsev + "/qz/",
+				{
+					tbname: "qz",
+					userid: userid,
+					fahao: fahao,
+					mc: mc,
+					lx:lx,
+					jianjie: jianjie,
+					code: code,
+					capid: capid,
+					existfiled: "mc",		 //需要判断mc是否存在	
+					countfiled:"userid",
+					method:"POST"						
+				},
+				function (result) {					
+					if (result.Succ == true) {
+						alert(result.Info)
+						location.reload()
+					} else {
+						if (result.Info == "") {
+							alert("群组已经存在！")
+						} else {
+							alert(result.Info)
+						}
+						$("#code").val("")
+					}
+				}, "json");
+		}
+
+/*
+		function delqz() {			
+			id = $("#quid").text()///$("#cdel-btn").attr("data-id")	
+			if (id == "") { //用户操作错误。
+				return
+			}
+			fahao = $.cookie("fahao")
+			if (fahao == "") {
+				alert("请先登录！")
+				return
+			}
+			capid = $("#check-btn").attr("data-id")
+			code = $("#code").val()
+			if (code == "" || capid == "") {
+				alert("请输入验证码。")
+				return
+			}
+			userid= $.cookie("id")
+			$.post(jjsev + "/qz/",
+				{
+					id: id,
+					userid: userid,
+					code: code,
+					capid: capid
+				},
+				function (result) {					
+					if (result.Succ == true) {
+						alert(result.Info)
+						location.reload()
+					} else {
+						alert("系统错误！" + result.Info)
+					}
+					$("#code").val("")
+				}, "json");
+		}
+*/
+		
+	</script>
+
+</body>
+
+</html>

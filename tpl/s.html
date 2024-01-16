@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {{template "static" .}} 
+  <title>{{.Kw }}-{{.Kw }}出处、句子、上一句、下一句-{{jf "国学传统文化四库全书检索-搜佛说" .Pubpar.Ift}}</title>
+  <meta name="keyWords" content='{{.Kw }}' />
+  <meta name="description" content="{{.Kw }}四库全书出处和句子造句以及上一句、下一句等。{{.Kw }}在国学传统文化四库全书的检索结果。" />
+</head>
+
+<body style="font-size: 16px;">
+
+  <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+    {{template "header" .}}
+    {{template "search" .}}
+    {{template "gomove" .}}
+    <div class="card">
+      <div class="card-body">
+        <div class="float-start" ><a href="{{.Pubpar.Host}}/s/{{.Kw }}"><b>{{.Kw }}</b></a>,<b>{{.Setime}}</b> </div>
+        <div class="float-end" ><a href="{{.Pubpar.Host}}/kwas/{{.Kw }}">{{jf "更多" .Pubpar.Ift}}</a></div>
+      </div>
+    </div>
+    <div class="card" id="Htmls">   
+    
+      {{$host:=.Pubpar.Host}}
+      {{$hkw:=.Kw}}
+      {{range $i, $ss := .Sresult}}          
+      <div class="card-header"><span class="badge bg-primary">{{$i}}</span> <a onclick="upjuzi(this)" data-artid="{{$ss.Fileid}}"
+          data-secid="{{$ss.Secid}}" href="javascript:" style="font-size: 21px;" title="上一句"><img src="{{$host}}/static123/bootstrap-icons/arrow-up-circle.svg"  width="21" height="21"></a><span
+          class="nrs">{{$ss.Filemeta}}</span>...
+        <a onclick="downjuzi(this)" data-artid="{{$ss.Fileid}}" data-secid="{{$ss.LSecid}}" href="javascript:" style="font-size: 21px;"
+          title="下一句"><img src="{{$host}}/static123/bootstrap-icons/arrow-down-circle.svg"  width="21" height="21"></a> <a style="font-size: 21px;"
+          href="{{$host}}/meta/{{$ss.Fileid}},{{$ss.Secid}}#{{$hkw}}" title="#{{$hkw}}出处"><img src="{{$host}}/static123/bootstrap-icons/blockquote-left.svg"  width="21" height="21"></a>
+      </div>
+      <div style="text-align:right" class="card-header">
+        {{range $sd := $ss.Dirs}}           
+        <a class="link-secondary" href="{{$host}}/dir/{{$sd.Did}}" title="{{$sd.Name}}目录、检索">{{$sd.Name}}</a>/
+        {{end}}
+        <a class="link-secondary" href="{{$host}}/art/{{$ss.Fileid}}#{{$hkw}}" title="#{{$hkw}}出处全文">{{$ss.Filename}}</a>        
+      </div>
+      {{end}}
+     
+      <div class="card">
+        <div class="card-body">
+          
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">            
+              {{if ne .P ""}}
+              <li class="page-item"><a class="page-link" href="{{.Pubpar.Host}}/s/?kw={{.Kw}}&dir={{.Dir}}">{{jf "开头"
+                .Pubpar.Ift}}</a></li>
+              <li class="page-item"><a class="page-link" href="javascript:history.back();">{{jf "上一页"
+                  .Pubpar.Ift}}</a></li>
+              {{end}}
+              {{if eq .Loop 21}}                           
+              <li class="page-item" style="cursor: pointer;"><a  class="page-link" href="{{.Pubpar.Host}}/s/?kw={{.Kw}}&p={{.Lastkey}}&dir={{.Dir}}">{{jf  "下一页" .Pubpar.Ift}}</a></li>
+              {{end}}
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+    {{template "footer" .}}
+
+    <script>
+      var kw = "{{.Kw }}"
+      rdcookie("sousuolishi", kw)
+      //--恢复对应的状态
+      $("#param").val(kw)        //输入框
+      //摘录关键词加粗
+      var objs = $(".nrs")
+      var nrs = ""
+      for (let index = 0; index < objs.length; index++) {
+        const element = objs[index];
+        nrs = $(element).html()
+        if (kw != "") {
+          nrs = addskb(nrs)
+          /*
+            var vals = kw.split(" ");
+            //--加粗搜索词
+            for (var i = 0; i < vals.length; i++) {
+                nrs = nrs.replace(
+                    new RegExp(vals[i], "g"),
+                    "<b>" + vals[i] + "</b>"
+                );
+            }*/
+          $(element).html(nrs)
+        }
+      }
+      /*
+                  //给经文url加上搜索词的hash
+                  objs = $(".badge.bg-success")
+                  for (let index = 0; index < objs.length; index++) {
+                      const element = objs[index];
+                      const herf = $(element).attr("href")
+                      $(element).attr("href", herf + "#" + kw)
+                  }
+                  */
+      /*
+      //加范围搜索
+      objs = $("a.badge.bg-primary")
+      for (let index = 0; index < objs.length; index++) {
+        const element = objs[index]
+        const txt = $(element).text()
+        const herf = $(element).attr("href")
+        const herfs = herf.split('/')
+        const mlid = herfs[herfs.length - 1]
+        var curl = window.location.href.split('_')[0]
+        curl = curl.split('?')[0]
+        //const ah = "<a herf='" + curl + "?dir=" + mlid + "'><i class=\"bi-search\"></i></a>"
+        //console.log(ah)
+        $(element).after("<a href='" + curl + "?dir=" + mlid + "' title='在【" + txt + "】搜索“" + kw + "”'><i class=\"bi-search\"></i></a>")
+      }
+      */
+      //------加载一句经文--------
+      //向上，获取一句经文
+      function upjuzi(obj) {
+        var Artid = $(obj).attr("data-Artid");
+        var Secid = $(obj).attr("data-Secid");
+        var next = $(obj).next();
+        var itid = parseInt(Secid) - 1;        
+        var olen=Secid.length        
+        var preid= itid.toString().padStart(olen,"0")        
+        if (itid>-1){
+          $(obj).attr("data-Secid",preid); //前面补0
+          getdzjjuzi(next, Artid, preid, "0");
+        }            
+      };
+      //向下，获取一句经文
+      function downjuzi(obj) {
+        var Artid = $(obj).attr("data-Artid");
+        var Secid = $(obj).attr("data-Secid");        
+        var prev = $(obj).prev();
+        var itid = parseInt(Secid) + 1;        
+        var olen=Secid.length
+        //var clen=itid.toString().length               
+        var nextid= itid.toString().padStart(olen,"0")
+        $(obj).attr("data-Secid", nextid);//前面补0
+        getdzjjuzi(prev, Artid, nextid, "1");
+      };
+      function getdzjjuzi(obj, Artid, Secid, updown) {        
+        //$.getJSON(
+          $.get(
+          "/getonejuzi/?artid=" + Artid + "&secid=" + Secid , 
+          function (data) {
+            console.log(data)
+            var rdata = data//addskb(data.result[0].sec);
+            if (rdata == "") {
+              return;
+            }
+            if (updown == "0") {
+              obj.prepend(rdata + "<br>");
+            } else {
+              obj.append("<br>" + rdata);              
+            }
+          }
+        );
+      }
+      //--加粗搜索词
+      function addskb(test) {
+
+        var val = $("#param").val().trim();
+        var rdata = test;
+        if (val != "") {
+          //const reg = /[\u4e00-\u9fa5]/g;
+          //var vals =val.match(reg)
+          var vals =val.replace(/[^\u4e00-\u9fa5]/gi, " ")  //替换非中文       
+          vals = vals.split(" ");    
+          var v = ""
+          //--加粗搜索词
+
+          for (var i = 0; i < vals.length; i++) {
+            if (vals[i].length==0) continue
+            if (vals[i].length <= 7) v = vals[i]; else v = vals[i].substring(0, 7)
+            rdata = rdata.replace(
+              new RegExp(v, "g"),
+              "<b>" + v + "</b>"
+            );
+          }
+        }
+        return rdata;
+      };
+/*
+      function snext(){
+        var url="{{.Pubpar.Host}}/s/?kw={{.Kw}}&p={{.Lastkey}}&dir={{.Dir}}"
+        window.location.href = url;
+      }*/
+    </script>
+</body>
+
+</html>

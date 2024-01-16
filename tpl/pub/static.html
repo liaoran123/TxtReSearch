@@ -1,0 +1,28 @@
+{{define "static"}}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta http-equiv="expires" content="600">    
+
+<!--文件过大，消耗宽带，导致首次加载慢。改用cdn方式
+    <script src="{{.Pubpar.Host}}/static123/jquery.js"></script>
+<link href="{{.Pubpar.Host}}/static123/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+<link href="{{.Pubpar.Host}}/static123/css/bootstrap.min.css" rel="stylesheet" />
+<script src="{{.Pubpar.Host}}/static123/js/bootstrap.bundle.min.js"></script>
+--><!--
+
+<link href="{{.Pubpar.Host}}/static123/css/bootstrap.min.css" rel="stylesheet" />
+<script src="{{.Pubpar.Host}}/static123/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+-->
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+<script src="{{.Pubpar.Host}}/static123/jquery.cookie.js"></script>
+<script src="{{.Pubpar.Host}}/static123/pubs20240111.js"></script>
+<link rel="shortcut icon" type="image/x-icon" href="{{.Pubpar.Host}}/static123/img/favicon.ico">
+     
+{{end}}

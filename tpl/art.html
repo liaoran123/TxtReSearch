@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {{template "static" .}}
+    <meta http-equiv="expires" content="2592000">
+    <meta name="keyWords" content='国学传统文化《{{jf .Titile .Pubpar.Ift}}》{{jf "全文在线阅读，语音朗读" .Pubpar.Ift}}' />
+    <meta name="description"
+        content='国学传统文化《{{jf .Titile .Pubpar.Ift}}》{{jf "全文在线阅读" .Pubpar.Ift}},《{{jf .Titile .Pubpar.Ift}}》{{jf "语音朗读、读诵" .Pubpar.Ift}}' />
+
+    <title>《{{jf .Titile .Pubpar.Ift}}》{{jf "全文在线阅读，语音朗读" .Pubpar.Ift}}--{{jf "国学传统文化四库全书--搜佛说" .Pubpar.Ift}}</title>
+</head>
+
+<body style="font-size: 16px;">
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+            <div class="card-header">
+                {{$host:=.Pubpar.Host}}
+                <a href="{{$host}}/dir/" title="四库全书目录">{{jf "四库全书" .Pubpar.Ift}}</a> /
+                {{range $ds := .Dirs}}
+                <a href="{{$host}}/dir/{{.Did}}" title="{{.Name}}目录、检索">{{.Name}}</a> /
+                {{end}}
+            </div>
+
+            <div class="card-header  text-center">
+                <h3>{{jf .Titile .Pubpar.Ift}}</h3>
+            </div>
+
+            <div class="card-header text-center">
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                    <button type="button" class="btn btn-outline-primary" id="play" title="开始语音朗读"><img src="{{.Pubpar.Host}}/static123/bootstrap-icons/caret-right-square.svg"  width="21" height="21"></button>
+                    <button type="button" class="btn btn-outline-primary" id="pause" title="停止语音朗读"><img src="{{.Pubpar.Host}}/static123/bootstrap-icons/stop-btn.svg"  width="21" height="21"></button>
+                </div>
+            </div>
+
+            <div class="card-header" id="jingwennr">
+                {{.Text}}
+            </div>            
+            <div class="card-header">              
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {{if ne .Pg 2}}
+                        <li class="page-item"><a class="page-link" href="{{.Pubpar.Host}}/art/{{.Aid}}">{{jf "开头"
+                                .Pubpar.Ift}}</a></li>
+                        <li class="page-item"><a class="page-link" href="javascript:history.back();">{{jf "上一页"
+                                .Pubpar.Ift}}</a></li>
+                        {{end}}
+                        {{if not .IsEof}}
+                        <li class="page-item" style="cursor: pointer;"><a class="page-link"
+                                href="{{.Pubpar.Host}}/art/{{.Aid}}?p={{.Pg}}">{{jf "下一页" .Pubpar.Ift}}</a></li>
+                        {{end}}
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{jf "语音功能并不成熟。如果语音播放不了，请使用“火狐浏览器”、Chrome浏览器、edge浏览器等相关内核浏览器" .Pubpar.Ift}}。<br>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        //$("#tytab1").addClass("active")       //搜索类型 ，经律论名
+        var kw = window.location.hash
+        kw = decodeURIComponent(kw)
+        kw = kw.replace("#", "")
+        $("#param").val(kw)        //输入框
+        var val = kw.trim()
+        var rdata = $("#jingwennr").html()
+        rdata = rdata.replace(new RegExp("\n", "g"), "<br/>")
+        if (kw != "") {
+            var vals = kw.split(" ")
+            //--加粗搜索词                 
+            for (var i = 0; i < vals.length; i++) {
+                if (vals[i] == "") continue
+                rdata = rdata.replace(new RegExp(vals[i], "g"), "<b>" + vals[i] + "</b>")
+            }
+        }
+        $("#jingwennr").html(rdata)
+
+    </script>
+    {{template "footer" .}}
+</body>
+
+</html>

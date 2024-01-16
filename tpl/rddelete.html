@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    {{template "static" .}}
+
+    <title>删除管理--千佛网</title>
+</head>
+
+<body style="font-size: 16px;">
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">
+             <div class="card-header">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">{{jf "表名" .Ift}}</label>
+                    <input type="text" class="form-control" id="tbname" maxlength="49">
+
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">{{jf "id" .Ift}}</label>
+                    <input type="text" class="form-control" id="pkid" maxlength="49">
+
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">{{jf "密码" .Ift}}</label>
+                    <input type="text" class="form-control" id="psw" maxlength="49">
+                    <button type="button" id="check-btn" data-id="" class="btn btn-primary" onclick="Redirect()">{{jf "确定" .Ift}}</button>
+                </div>
+                <h5>{{.Info}}</h5>
+            </div>   
+        </div>
+		<script type="text/javascript">
+        function Redirect(){
+            tbname=$("#tbname").val().trim()
+            pkid=$("#pkid").val().trim()
+            psw=$("#psw").val().trim()
+            window.location.href="/admin/delete/?tbname="+tbname+"&pkid="+pkid+"&psw="+psw
+        }
+        </script>
+       
+        {{template "footer" .}}
+</body>
+
+</html>

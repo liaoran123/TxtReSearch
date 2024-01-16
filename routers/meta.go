@@ -9,8 +9,8 @@ import (
 )
 
 func Meta(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*") //同源策略，不加客户端调用不了。
-	w.Header().Set("Content-Type", "application/json")
+	//w.Header().Set("Access-Control-Allow-Origin", "*") //同源策略，不加客户端调用不了。
+	//w.Header().Set("Content-Type", "application/json")
 	const (
 		tbname   = "c"
 		idxfield = "id"

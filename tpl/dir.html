@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {{template "static" .}}
+    <meta http-equiv="expires" content="2592000">
+    <title>{{jf .Titile .Pubpar.Ift}}{{jf "目录、检索" .Pubpar.Ift}}--{{jf "国学传统文化四库全书检索-搜佛说" .Pubpar.Ift}}</title>
+    <meta name="keywords" content="{{jf .Titile .Pubpar.Ift}}目录,{{jf .Titile .Pubpar.Ift}}检索">
+    <meta name="description" content="{{jf .Titile .Pubpar.Ift}}目录、{{jf .Titile .Pubpar.Ift}}目录范围在线全文检索。" />
+</head>
+
+<body style="font-size: 16px;" onload="setdir()">
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+
+        {{template "gomove" .}}
+        <div class="card">
+            <div class="card-header">
+                {{$host:=.Pubpar.Host}}
+                <a href="{{$host}}/dir/" title="四库全书目录、检索">{{jf "四库全书" .Pubpar.Ift}}</a> /
+                {{range $ds := .Dirs}}
+                <a href="{{$host}}/dir/{{.Did}}" title="{{.Name}}目录、检索">{{.Name}}</a> /
+                {{end}}
+            </div>
+            <div class="card-header">
+                <h3>{{jf .Titile .Pubpar.Ift}} {{jf "目录、检索" .Pubpar.Ift}}</h3>
+                <a class="badge bg-primary" href="javascript:" onclick="dfSedir()">{{jf "设置为默认搜索目录" .Pubpar.Ift}}</a>
+            </div>
+        </div>
+        {{template "search" .}}
+        <div class="card">
+            <div class="card-header">
+                {{$titile:=.Titile}}
+                {{range $fl := .Filelist}}
+                {{if $fl.Isdir}}
+                <p><img src="{{$host}}/static123/bootstrap-icons/folder.svg" width="21" height="21"><a
+                        href="{{$host}}/dir/{{$fl.Fid}}" title="{{$titile}}.{{$fl.Name}}目录、检索">{{$fl.Name}}</a></p>
+                {{else}}
+                <p><img src="{{$host}}/static123/bootstrap-icons/book.svg" width="21" height="21"><a
+                        href="{{$host}}/art/{{$fl.Fid}}" title="{{$titile}}.{{$fl.Name}}全文在线阅读，朗诵">{{$fl.Name}}</a></p>
+                {{end}}
+                {{end}}
+            </div>
+        </div>
+    </div>
+    <script>
+        function setdir() {
+            $("#bttext").text("{{.Name }}")
+            $("#bttext").attr("data-dir", "{{.Id }}")           
+        }    
+        //设置为默认搜索目录
+        function dfSedir() {
+                $.cookie("jlv", "{{.Name }}" + "|" + "{{.Id }}", {
+                    expires: 21,
+                    path: "/",
+                });
+                alert("成功！")
+            }      
+    </script>
+    {{template "footer" .}}
+</body>
+
+</html>

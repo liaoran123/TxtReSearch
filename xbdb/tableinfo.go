@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	Split      = "-"     //字段分隔符
-	ChSplit    = "- "    //字段分隔符的转义码，原Split+空格。空格不会导致转换后排序不正确
-	IdxSplit   = "."     //索引分隔符，转义码 原IdxSplit+空格。空格不会导致转换后排序不正确
-	ChIdxSplit = ". "    //索引分隔符的转义码
+	Split      = "_"     //字段分隔符
+	ChSplit    = "_ "    //字段分隔符的转义码，原Split+空格。空格不会导致转换后排序不正确
+	IdxSplit   = "~"     //索引分隔符，转义码 原IdxSplit+空格。空格不会导致转换后排序不正确
+	ChIdxSplit = "~ "    //索引分隔符的转义码
 	TbInfopfx  = "tbifo" //表信息的前缀
 	Tbspfx     = "table" //表列表的前缀
 )
@@ -99,7 +99,7 @@ func (t *TableInfo) Create(name, ftlen, diychar string, fields, fieldType, idxs,
 	r.Succ = r.Succ && t.db.Put([]byte(tbpfx+IdxSplit+"ft"), []byte(strings.Join(fullText, Split)), nil) == nil  //添加索引信息
 	r.Succ = r.Succ && t.db.Put([]byte(tbpfx+IdxSplit+"pt"), []byte(strings.Join(patterns, Split)), nil) == nil  //全文索引解析模型
 	r.Succ = r.Succ && t.db.Put([]byte(tbpfx+IdxSplit+"ftlen"), []byte(ftlen), nil) == nil
-	r.Succ = r.Succ && t.db.Put([]byte(tbpfx+IdxSplit+"diy"), []byte(ftlen), nil) == nil
+	r.Succ = r.Succ && t.db.Put([]byte(tbpfx+IdxSplit+"diy"), []byte(diychar), nil) == nil
 
 	r.Succ = r.Succ && t.db.Put([]byte(Tbspfx+Split+name), []byte{}, nil) == nil //添加表列表
 

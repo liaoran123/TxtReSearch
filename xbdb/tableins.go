@@ -47,6 +47,7 @@ func (t *Table) Ins(params map[string]string) (r ReInfo) {
 	if r.Succ {
 		r.LastId = params["id"]
 	}
+	params["id"] = "" //不知道什么原因，如果不传值，这个值会保留上次的值，故而要清空。
 	return
 }
 

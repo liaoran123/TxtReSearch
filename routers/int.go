@@ -67,3 +67,18 @@ func createc(tbifo *xbdb.TableInfo) {
 	r := tbifo.Create(name, ftlen, diychar, fields, fieldType, idxs, fullText, patterns)
 	fmt.Printf("r: %v\n", r)
 }
+
+/*
+func createc(tbifo *xbdb.TableInfo) {
+	name := "c"                                         //目录表，
+	fields := []string{"id", "s", "r"}                  //字段 s 是文章的分段内容，r，是s的反转字符串，用于前置匹配词,pos,为位置
+	fieldType := []string{"string", "string", "string"} //字段
+	idxs := []string{}                                  //索引字段,fields的下标对应的字段。支持组合查询，字段之间用,分隔
+	fullText := []string{"1", "2"}                      //考据级全文搜索索引字段的下标。
+	ftlen := "7"                                        //全文搜索的长度，中文默认是7
+	patterns := []string{"1", "5"}                      //搜索词模型。 1,中文;2字母;3，数字；4，标点符号；5，自定义。不符合的字被过滤。可以组合。
+	diychar := "《》"
+	r := tbifo.Create(name, ftlen, diychar, fields, fieldType, idxs, fullText, patterns)
+	fmt.Printf("r: %v\n", r)
+}
+*/

@@ -1,0 +1,32 @@
+{{define "static"}}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta http-equiv="expires" content="600">    
+
+<!--文件过大，消耗宽带，导致首次加载慢。改用cdn方式
+    <script src="{{.Pubpar.Host}}/static123/jquery.js"></script>
+<link href="{{.Pubpar.Host}}/static123/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+<link href="{{.Pubpar.Host}}/static123/css/bootstrap.min.css" rel="stylesheet" />
+<script src="{{.Pubpar.Host}}/static123/js/bootstrap.bundle.min.js"></script>
+--><!--
+
+<link href="{{.Pubpar.Host}}/static123/css/bootstrap.min.css" rel="stylesheet" />
+<script src="{{.Pubpar.Host}}/static123/js/bootstrap.bundle.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"  crossorigin="anonymous"></script>
+-->
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+<link href="{{.Pubpar.Host}}/static123/css/bootstrap.min.css" rel="stylesheet" />
+<script src="{{.Pubpar.Host}}/static123/js/bootstrap.bundle.min.js"></script>
+
+<script src="{{.Pubpar.Host}}/static123/jquery.cookie.js"></script>
+<script src="{{.Pubpar.Host}}/static123/pubs20231224.js"></script>
+<link rel="shortcut icon" type="image/x-icon" href="{{.Pubpar.Host}}/static123/img/favicon.ico">
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9181563575689749"
+     crossorigin="anonymous"></script>
+     
+{{end}}

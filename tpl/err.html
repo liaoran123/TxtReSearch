@@ -1,0 +1,24 @@
+<html>
+
+<head>
+    {{template "static" .}}
+    <title>{{jf "错误页" .Ift}}--{{jf "千佛网" .Ift}}</title>
+</head>
+
+<body>
+
+    <div id="home" style="max-width: 1024px; margin-right: auto; margin-left: auto;">
+        {{template "header" .}}
+        {{template "search" .}}
+        {{template "gomove" .}}
+        <div class="card">           
+            <div class="card-footer">
+               <b> {{jf "该页面已不存在或没有搜索结果！" .Ift}}</b>
+               <b></b>
+            </div>
+           
+        </div>      
+        {{template "footer" .}}
+</body>
+
+</html>

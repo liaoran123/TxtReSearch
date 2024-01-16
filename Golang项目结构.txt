@@ -1,0 +1,54 @@
+这是一个经典的Golang 项目的目录结构，包含以下目录：
+.
+├── cmd
+│   └── server
+│       ├── main.go
+│       ├── wire.go
+│       └── wire_gen.go
+├── config
+│   ├── local.yml
+│   └── prod.yml
+├── internal
+│   ├── handler
+│   │   ├── handler.go
+│   │   └── user.go
+│   ├── middleware
+│   │   └── cors.go
+│   ├── model
+│   │   └── user.go
+│   ├── repository
+│   │   ├── repository.go
+│   │   └── user.go
+│   ├── server
+│   │   └── http.go
+│   └── service
+│       ├── service.go
+│       └── user.go
+├── pkg
+├── LICENSE
+├── README.md
+├── README_zh.md
+├── go.mod
+└── go.sum
+
+
+
+
+cmd：存放命令行应用的代码，例如 main.go。
+config：存放配置文件，例如 config.yaml。
+internal：存放项目内部的代码，不对外暴露。
+
+repository：存放数据访问层的代码。
+handler：存放 HTTP 请求处理器的代码。
+middleware：存放 HTTP 中间件的代码。
+model：存放数据模型的代码。
+server：存放 HTTP 服务器以及路由注册的代码。
+service：存放业务逻辑的代码。
+
+
+pkg：存放可重用的代码，对外暴露。
+
+config：存放读取配置文件的代码。
+helper：存放辅助函数的代码。
+http：存放 HTTP 相关的代码。
+log：存放日志相关的代码。
